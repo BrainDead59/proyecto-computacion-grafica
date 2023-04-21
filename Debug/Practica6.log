@@ -1,0 +1,6 @@
+﻿  texturizado.cpp
+C:\Users\miran\Desktop\Practica6\Practica6\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\Practica6\Practica6\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\Practica6\Practica6\texturizado.cpp(460,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\Practica6\Practica6\texturizado.cpp(462,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Practica6.vcxproj -> C:\Users\miran\Desktop\Practica6\Debug\Practica6.exe
