@@ -2,6 +2,6 @@
   texturizado.cpp
 C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
 C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\texturizado.cpp(564,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\texturizado.cpp(566,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\texturizado.cpp(596,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\texturizado.cpp(598,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
   ProyectoFinal.vcxproj -> C:\Users\miran\Desktop\ProyectoFinal\Debug\ProyectoFinal.exe
