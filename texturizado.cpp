@@ -43,6 +43,7 @@ Texture plainTexture;
 Texture pisoTexture;
 Texture dadoTexture;
 Texture dodecaedroTexture;
+Texture sailorTexture;
 
 Texture dadoT;
 
@@ -251,6 +252,105 @@ void CrearDado()
 
 }
 
+void CrearSailorMoon()
+{
+	unsigned int sailor_indices[] = {
+
+
+		// front
+		0, 1, 10,
+		0, 10, 11,
+		1, 2, 9,
+		1, 9, 10,
+		2, 3, 8,
+		2, 8, 9,
+		3, 4, 7,
+		3, 7, 8,
+		4, 5, 6,
+		4, 6, 7,
+
+		//derecho
+		12, 13, 14,
+		12, 14, 15,
+		13, 16, 17,
+		13, 17, 14,
+		16, 18, 19,
+		16, 19, 17,
+		18, 20, 21,
+		18, 21, 19,
+		20, 22, 23,
+		20, 23, 21,
+
+		// izq
+		24, 25, 26,
+		24, 26, 27,
+		25, 28, 29,
+		25, 29, 26,
+		28, 30, 31,
+		28, 31, 29,
+		30, 32, 33,
+		30, 33, 31,
+		32, 34, 35,
+		32, 35, 33
+	};
+	
+	GLfloat sailor_vertices[] = {
+
+		//cabeza
+
+		// rostro
+		//x		y		z			S				T					NX		NY		NZ
+		-0.35f, 0.25f,  0.3f,		(0.009f * 30),  (0.009f * 90),		0.0f,	0.0f,	-1.0f,	//0
+		-0.35f, -0.1f,  0.3f,		(0.009f * 30),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//1
+		-0.33f,  -0.15f,  0.28f,	(0.009f * 31),	(0.009f * 60),		0.0f,	0.0f,	-1.0f,	//2
+		-0.30f,  -0.2f,  0.25f,		(0.009f * 33),	(0.009f * 56),		0.0f,	0.0f,	-1.0f,	//3
+		-0.25f,  -0.23f,  0.20f,	(0.009f * 37),	(0.009f * 54),		0.0f,	0.0f,	-1.0f,	//4
+		-0.20f,  -0.25f,  0.15f,	(0.009f * 41),	(0.009f * 53),		0.0f,	0.0f,	-1.0f,	//5
+		0.20f,  -0.25f,  0.15f,		(0.009f * 72),	(0.009f * 53),		0.0f,	0.0f,	-1.0f,	//6
+		0.25f,  -0.23f,  0.20f,		(0.009f * 76),	(0.009f * 54),		0.0f,	0.0f,	-1.0f,	//7
+		0.30f,  -0.2f,  0.25f,		(0.009f * 80),	(0.009f * 56),		0.0f,	0.0f,	-1.0f,	//8
+		0.33f,  -0.15f,  0.28f,		(0.009f * 82),	(0.009f * 60),		0.0f,	0.0f,	-1.0f,	//9
+		0.35f, -0.1f,  0.3f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//10
+		0.35f, 0.25f,  0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	-1.0f,	//11
+	
+		// derecho
+		//x		y		z			S				T					NX		NY		NZ
+		0.35f, 0.25f,  0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	-1.0f,	//12
+		0.35f, -0.1f,  0.3f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//13
+		0.35f, -0.1f,  -0.3f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//14
+		0.35f, 0.25f,  -0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	-1.0f,	//15
+		0.33f, -0.15f,  0.28f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//16
+		0.33f, -0.15f,  -0.28f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//17
+		0.3f, -0.2f,  0.25f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//18
+		0.3f, -0.2f,  -0.25f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//19
+		0.25f, -0.23f,  0.2f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//20
+		0.25f, -0.23f,  -0.2f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//21
+		0.2f, -0.25f,  0.15f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//22
+		0.2f, -0.25f,  -0.15f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//23
+
+		// izquierdo
+		//x		y		z			S				T					NX		NY		NZ
+		-0.35f, 0.25f,  0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	-1.0f,	//24
+		-0.35f, -0.1f,  0.3f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//25
+		-0.35f, -0.1f,  -0.3f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//26
+		-0.35f, 0.25f,  -0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	-1.0f,	//27
+		-0.33f, -0.15f,  0.28f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//28
+		-0.33f, -0.15f,  -0.28f,	(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//29
+		-0.3f, -0.2f,  0.25f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//30
+		-0.3f, -0.2f,  -0.25f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//31
+		-0.25f, -0.23f,  0.2f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//32
+		-0.25f, -0.23f,  -0.2f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//33
+		-0.2f, -0.25f,  0.15f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//34
+		-0.2f, -0.25f,  -0.15f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	-1.0f,	//35
+	};
+
+	Mesh* sailor = new Mesh();
+	sailor->CreateMesh(sailor_vertices, sailor_indices, 288, 90);
+	meshList.push_back(sailor);
+
+}
+
+
 
 void CrearDodecaedro()
 {
@@ -410,6 +510,7 @@ int main()
 	CrearDado();
 	CreateShaders();
 	CrearDodecaedro();
+	CrearSailorMoon();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 1.0f, 0.5f);
 
@@ -427,6 +528,9 @@ int main()
 
 	dodecaedroTexture = Texture("Textures/dodecaedro.jpg");
 	dodecaedroTexture.LoadTextureA();
+
+	sailorTexture = Texture("Textures/sailormoon_textura.png");
+	sailorTexture.LoadTextureA();
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt.3ds");
@@ -515,12 +619,23 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		//Camino_M.RenderModel();
 
-		//Dado de Opengl
+		//Piso 
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-1.5f, -4.5f, -2.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 5.0f, 50.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dadoTexture.UseTexture();
+		meshList[4]->RenderMesh();
+
+
+		//sailor
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//dadoTexture.UseTexture();
-	//	meshList[4]->RenderMesh();
+		sailorTexture.UseTexture();
+		meshList[6]->RenderMesh();
+
 		
 		//Dado importado
 		model = glm::mat4(1.0);
@@ -532,11 +647,11 @@ int main()
 
 
 		//DODECAEDRO EN OPENGL
-		model = glm::mat4(1.0);
+		/*model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dodecaedroTexture.UseTexture();
-		meshList[5]->RenderMesh();
+		meshList[5]->RenderMesh();*/
 
 
 		glUseProgram(0);
