@@ -2,5 +2,5 @@
 Diorama de Sailor Moon y Puro Hueso
 
 ### Creadores
-- Miranda :frog:
-- BrianDead :skull:
+- Miranda :cat:
+- BrainDead :skull:
