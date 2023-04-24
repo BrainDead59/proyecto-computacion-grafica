@@ -17,6 +17,7 @@ Práctica 6: Texturizado
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
+#include <gtc\random.hpp>
 //para probar el importer
 //#include<assimp/Importer.hpp>
 
@@ -35,6 +36,9 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
+using std::vector;
+const float PI = 3.14159265f;
+
 Camera camera;
 
 Texture brickTexture;
@@ -44,6 +48,7 @@ Texture pisoTexture;
 Texture dadoTexture;
 Texture dodecaedroTexture;
 Texture sailorTexture;
+Texture sailorColetasTexture;
 
 Texture dadoT;
 
@@ -56,7 +61,7 @@ Model Dado_M;
 
 Skybox skybox;
 
-//Sphere cabeza = Sphere(0.5, 20, 20);
+Sphere coletas= Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
@@ -255,8 +260,6 @@ void CrearDado()
 void CrearSailorMoonCabeza()
 {
 	unsigned int sailor_indices[] = {
-
-
 		// front
 		0, 1, 10,
 		0, 10, 11,
@@ -313,18 +316,18 @@ void CrearSailorMoonCabeza()
 
 		// rostro
 		//x		y		z			S				T					NX		NY		NZ
-		-0.35f, 0.25f,  0.3f,		(0.009f * 30),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//0
-		-0.35f, -0.1f,  0.3f,		(0.009f * 30),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//1
-		-0.33f,  -0.15f,  0.28f,	(0.009f * 31),	(0.009f * 60),		0.0f,	0.0f,	0.0f,	//2
-		-0.30f,  -0.2f,  0.25f,		(0.009f * 33),	(0.009f * 56),		0.0f,	0.0f,	0.0f,	//3
-		-0.25f,  -0.23f,  0.20f,	(0.009f * 37),	(0.009f * 54),		0.0f,	0.0f,	0.0f,	//4
-		-0.20f,  -0.25f,  0.15f,	(0.009f * 41),	(0.009f * 53),		0.0f,	0.0f,	0.0f,	//5
-		0.20f,  -0.25f,  0.15f,		(0.009f * 72),	(0.009f * 53),		0.0f,	0.0f,	0.0f,	//6
-		0.25f,  -0.23f,  0.20f,		(0.009f * 76),	(0.009f * 54),		0.0f,	0.0f,	0.0f,	//7
-		0.30f,  -0.2f,  0.25f,		(0.009f * 80),	(0.009f * 56),		0.0f,	0.0f,	0.0f,	//8
-		0.33f,  -0.15f,  0.28f,		(0.009f * 82),	(0.009f * 60),		0.0f,	0.0f,	0.0f,	//9
-		0.35f, -0.1f,  0.3f,		(0.009f * 83),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//10
-		0.35f, 0.25f,  0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//11
+		-0.35f, 0.25f,  0.3f,		(0.009f * 27),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//0
+		-0.35f, -0.1f,  0.3f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//1
+		-0.33f,  -0.15f,  0.28f,	(0.009f * 28),	(0.009f * 60),		0.0f,	0.0f,	0.0f,	//2
+		-0.30f,  -0.2f,  0.25f,		(0.009f * 30),	(0.009f * 56),		0.0f,	0.0f,	0.0f,	//3
+		-0.25f,  -0.23f,  0.20f,	(0.009f * 34),	(0.009f * 54),		0.0f,	0.0f,	0.0f,	//4
+		-0.20f,  -0.25f,  0.15f,	(0.009f * 38),	(0.009f * 53),		0.0f,	0.0f,	0.0f,	//5
+		0.20f,  -0.25f,  0.15f,		(0.009f * 69),	(0.009f * 53),		0.0f,	0.0f,	0.0f,	//6
+		0.25f,  -0.23f,  0.20f,		(0.009f * 73),	(0.009f * 54),		0.0f,	0.0f,	0.0f,	//7
+		0.30f,  -0.2f,  0.25f,		(0.009f * 77),	(0.009f * 56),		0.0f,	0.0f,	0.0f,	//8
+		0.33f,  -0.15f,  0.28f,		(0.009f * 79),	(0.009f * 60),		0.0f,	0.0f,	0.0f,	//9
+		0.35f, -0.1f,  0.3f,		(0.009f * 80),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//10
+		0.35f, 0.25f,  0.3f,		(0.009f * 80),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//11
 	
 		// derecho
 		//x		y		z			S				T					NX		NY		NZ
@@ -382,7 +385,145 @@ void CrearSailorMoonCabeza()
 
 }
 
+void CrearSailorMoonPelo()
+{
+	unsigned int indices[] = {
+		// fleco 18
+		0, 1, 2,
+		1, 2, 3,
+		2, 3, 4,
+		3, 4, 5,
+		4, 5, 6,
+		5,6,7,
+		5,7,8,
+		3,5,8,
+		8, 9,10,
+		3,8,10,
+		1,3,15,
+		3, 10,11,
+		11,12,13,
+		3,11,14,
+		11,13,14,
+		3, 14, 15,
+		14, 15, 16,
+		14, 16, 17,
+		// 36
+		0+18,	1 + 18, 2 + 18,
+		1 + 18, 2 + 18, 3 + 18,
+		2 + 18, 3 + 18, 4 + 18,
+		3 + 18, 4 + 18, 5 + 18,
+		4 + 18, 5 + 18, 6 + 18,
+		5 + 18,	6 + 18,	7 + 18,
+		5 + 18,	7 + 18,	8 + 18,
+		3 + 18,	5 + 18,	8 + 18,
+		8 + 18, 9 + 18,	10 + 18,
+		3 + 18,	8 + 18,	10 + 18,
+		1 + 18,	3 + 18,	15 + 18,
+		3 + 18, 10 + 18,11 + 18,
+		11 + 18,12 + 18,13 + 18,
+		3 + 18,	11 + 18,14 + 18,
+		11 + 18,13 + 18,14 + 18,
+		3 + 18, 14 + 18, 15 + 18,
+		14 + 18, 15 + 18, 16 + 18,
+		14 + 18, 16 + 18, 17 + 18,
+		//41
+		14, 17, 36,
+		16, 17, 36, 
+		15, 16, 37,
+		16, 36, 37,
+		36, 37, 38,
+		//46
+		32, 35, 39,
+		34, 35, 39,
+		33, 34, 40,
+		34, 39, 40,
+		39, 40, 41,
+		//54
+		15, 42,33,
+		42, 33, 43,
+		15, 42, 37,
+		42, 37, 44,
+		33, 43, 40,
+		43, 40, 45,
+		42, 43, 44,
+		45, 44, 43,
+		//58
+		38, 37, 41,
+		37, 41, 40,
+		37, 40, 44,
+		40, 44, 45
+		
+	};
 
+	GLfloat vertices[] = {
+
+		// fleco
+		//x		y		z			S				T					NX		NY		NZ
+		0.0f, 0.25f,  0.3f,		(0.009f * 27),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//0
+		0.0f, 0.29f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//1
+		0.08f, 0.2f,  0.3f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//2
+		0.09f, 0.2f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//3
+		0.09f, 0.17f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//4
+		0.1f, 0.17f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//5
+		0.07f, 0.1f,  0.3f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//6
+		0.13f, 0.1f,  0.3f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//7
+		0.18f, 0.11f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//8
+		0.19f, 0.09f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//9
+		0.23f, 0.09f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//10
+		0.26f, 0.1f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//11
+		0.27f, 0.08f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//12
+		0.3f, 0.08f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//13
+		0.36f, 0.09f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//14
+		0.36f, 0.29f,  0.34f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//15
+		0.38f, 0.23f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//16
+		0.38f, 0.15f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//17
+
+
+
+		0.0f, 0.25f,  0.3f,		(0.009f * 27),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//0 18
+		0.0f, 0.29f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//1 19
+		-0.08f, 0.2f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//2 20
+		-0.09f, 0.2f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//3 21
+		-0.09f, 0.17f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//4 22
+		-0.1f, 0.17f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//5 23
+		-0.07f, 0.1f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//6 24
+		-0.13f, 0.1f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//7 25
+		-0.18f, 0.11f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//8 26
+		-0.19f, 0.09f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//9 27
+		-0.23f, 0.09f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//10 28
+		-0.26f, 0.1f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//11 29
+		-0.27f, 0.08f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//12 30
+		-0.3f, 0.08f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//13 31
+		-0.36f, 0.09f,  0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//14 32
+		-0.36f, 0.29f,  0.34f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//15 33
+		-0.38f, 0.23f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//16 34
+		-0.38f, 0.15f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//17 35
+
+		//// izquierdo
+		////x		y		z			S				T					NX		NY		NZ
+		0.36f, 0.0f,  0.0f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//36
+		0.36f, 0.29f,  -0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//37
+		0.36f, -0.17f,  -0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//38
+
+		//// derecho
+		////x		y		z			S				T					NX		NY		NZ
+		-0.36f, 0.0f,  0.0f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//39
+		-0.36f, 0.29f,  -0.31f,		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//40
+		-0.36f, -0.17f,  -0.31f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//41
+
+		//// arriba
+		////x		y		z			S				T					NX		NY		NZ
+		0.28f, 0.35f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//42
+		-0.28f, 0.35f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//43
+		0.33f, 0.35f,  -0.20f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//44
+		-0.33f, 0.35f,  -0.20f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//45
+	};
+
+	Mesh* sailor = new Mesh();
+	sailor->CreateMesh(vertices, indices, 368, 174);
+	meshList.push_back(sailor);
+
+}
 
 void CrearDodecaedro()
 {
@@ -531,6 +672,123 @@ void CrearDodecaedro()
 
 }
 
+void CrearTorzo()
+{
+	unsigned int indices[] = {
+		// sup
+		0,1,2,
+		
+	
+	};
+
+	GLfloat vertices[] = {
+		//cara superior (6)
+		//x			y		z	s		t		x		y		z
+		1.0f,	0.0f,	1.0f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, // 0
+		-1.0f,	0.0f,	1.0f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, // 1
+		0.0f,	2.0f,	1.0f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, // 2
+		
+
+	};
+
+	Mesh* dodecaedro = new Mesh();
+	dodecaedro->CreateMesh(vertices, indices, 32, 3);
+	meshList.push_back(dodecaedro);
+
+}
+
+
+void CrearCilindro(int res, float R) {
+
+	//constantes utilizadas en los ciclos for
+	int n, i;
+	//cálculo del paso interno en la circunferencia y variables que almacenarán cada coordenada de cada vértice
+	GLfloat dt = 2 * PI / res, x, z, y = -0.5f;
+
+	vector<GLfloat> vertices;
+	vector<unsigned int> indices;
+
+	//ciclo for para crear los vértices de las paredes del cilindro
+	for (n = 0; n <= (res); n++) {
+		if (n != res) {
+			x = R * cos((n)*dt);
+			z = R * sin((n)*dt);
+		}
+		//caso para terminar el círculo
+		else {
+			x = R * cos((0) * dt);
+			z = R * sin((0) * dt);
+		}
+		for (i = 0; i < 6; i++) {
+			switch (i) {
+			case 0:
+				vertices.push_back(x);
+				break;
+			case 1:
+				vertices.push_back(y);
+				break;
+			case 2:
+				vertices.push_back(z);
+				break;
+			case 3:
+				vertices.push_back(x);
+				break;
+			case 4:
+				vertices.push_back(0.5);
+				break;
+			case 5:
+				vertices.push_back(z);
+				break;
+			}
+		}
+	}
+
+	//ciclo for para crear la circunferencia inferior
+	for (n = 0; n <= (res); n++) {
+		x = R * cos((n)*dt);
+		z = R * sin((n)*dt);
+		for (i = 0; i < 3; i++) {
+			switch (i) {
+			case 0:
+				vertices.push_back(x);
+				break;
+			case 1:
+				vertices.push_back(-0.5f);
+				break;
+			case 2:
+				vertices.push_back(z);
+				break;
+			}
+		}
+	}
+
+	//ciclo for para crear la circunferencia superior
+	for (n = 0; n <= (res); n++) {
+		x = R * cos((n)*dt);
+		z = R * sin((n)*dt);
+		for (i = 0; i < 3; i++) {
+			switch (i) {
+			case 0:
+				vertices.push_back(x);
+				break;
+			case 1:
+				vertices.push_back(0.5);
+				break;
+			case 2:
+				vertices.push_back(z);
+				break;
+			}
+		}
+	}
+
+	//Se generan los indices de los vértices
+	for (i = 0; i < vertices.size(); i++) indices.push_back(i);
+
+	//se genera el mesh del cilindro
+	Mesh* cilindro = new Mesh();
+	cilindro->CreateMesh(vertices, indices, vertices.size(), indices.size());
+	meshList.push_back(cilindro);
+}
 
 
 int main()
@@ -543,8 +801,14 @@ int main()
 	CreateShaders();
 	CrearDodecaedro();
 	CrearSailorMoonCabeza();
+	CrearSailorMoonPelo();
+	CrearTorzo();
+	//CrearCilindro(50, 1.0f);
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 1.0f, 0.5f);
+	coletas.init();
+	coletas.load();
+
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureA();
@@ -563,6 +827,9 @@ int main()
 
 	sailorTexture = Texture("Textures/sailormoon_textura.png");
 	sailorTexture.LoadTextureA();
+
+	sailorColetasTexture = Texture("Textures/coletas.png");
+	sailorColetasTexture.LoadTextureA();
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt.3ds");
@@ -662,13 +929,77 @@ int main()
 
 		//sailor
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 4.5f, 0.0f));
+		modelaux = model;
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		sailorTexture.UseTexture();
 		meshList[6]->RenderMesh();
 
+		//sailor pelo
+		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
+		model = glm::mat4(1.0);
+		model = modelaux;
+		//model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//sailorTexture.UseTexture();
+		meshList[7]->RenderMesh();
+
+
+		//coletas
+		model = glm::mat4(1.0);
+		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(1.0f, 1.3f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		sailorColetasTexture.UseTexture();
+		coletas.render(); //Renderiza esfera
+
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-1.0f, 1.3f, -1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		sailorColetasTexture.UseTexture();
+		coletas.render(); //Renderiza esfera
+
 		
+		//sailor coletas
+		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
+		model = glm::mat4(1.0);
+		model = modelaux;
+		//model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 3.0f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
+		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//meshList[8]->RenderMeshGeometry();
+
+
+
+		color = glm::vec3(0.0f, 0.0f, 0.0f);
+		model = glm::mat4(1.0);
+		model = modelaux;
+		//model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//sailorTexture.UseTexture();
+		meshList[8]->RenderMesh();
+
+
+
+
+
+
+
+
+
 		//Dado importado
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-3.0f, 3.0f, -2.0f));
