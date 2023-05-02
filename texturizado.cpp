@@ -41,23 +41,15 @@ const float PI = 3.14159265f;
 
 Camera camera;
 
-Texture brickTexture;
 Texture dirtTexture;
-Texture plainTexture;
 Texture pisoTexture;
 Texture dadoTexture;
-Texture dodecaedroTexture;
 Texture sailorTexture;
 Texture sailorColetasTexture;
 
-Texture dadoT;
-
-
-Model Kitt_M;
-Model Llanta_M;
 Model Camino_M;
-Model Blackhawk_M;
-Model Dado_M;
+Model LapidaPH1;
+Model vela;
 
 Skybox skybox;
 
@@ -66,15 +58,11 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-
 // Vertex Shader
 static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
-
-
-
 
 //cálculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -104,8 +92,6 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
 	}
 }
-
-
 
 void CreateObjects()
 {
@@ -175,7 +161,6 @@ void CreateObjects()
 	meshList.push_back(obj4);
 
 }
-
 
 void CreateShaders()
 {
@@ -697,7 +682,6 @@ void CrearTorzo()
 
 }
 
-
 void CrearCilindro(int res, float R) {
 
 	//constantes utilizadas en los ciclos for
@@ -810,38 +794,22 @@ int main()
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
 
-	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTextureA();
 	dirtTexture = Texture("Textures/dirt.png");
 	dirtTexture.LoadTextureA();
-	plainTexture = Texture("Textures/plain.png");
-	plainTexture.LoadTextureA();
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
-
 	dadoTexture = Texture("Textures/dadoe.jpg");
 	dadoTexture.LoadTextureA();
-
-	dodecaedroTexture = Texture("Textures/dodecaedro.jpg");
-	dodecaedroTexture.LoadTextureA();
-
 	sailorTexture = Texture("Textures/sailormoon_textura.png");
 	sailorTexture.LoadTextureA();
-
 	sailorColetasTexture = Texture("Textures/coletas.png");
 	sailorColetasTexture.LoadTextureA();
 
-	Kitt_M = Model();
-	Kitt_M.LoadModel("Models/kitt.3ds");
-	Llanta_M = Model();
-	Llanta_M.LoadModel("Models/k_rueda.3ds");
-	Blackhawk_M = Model();
-	Blackhawk_M.LoadModel("Models/uh60.obj");
-	Camino_M = Model();
-	Camino_M.LoadModel("Models/railroad track.obj");
+	LapidaPH1 = Model();
+	LapidaPH1.LoadModel("Models/lapidaPH1.obj");
 
-	Dado_M = Model();
-	Dado_M.LoadModel("Models/dado.obj");
+	vela = Model();
+	vela.LoadModel("Models/vela.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -897,35 +865,14 @@ int main()
 		//pisoTexture.UseTexture();
 		//meshList[2]->RenderMesh();
 
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.5f, -1.5f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Kitt_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 3.0f, -1.0));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Blackhawk_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -1.53f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Camino_M.RenderModel();
-
 		//Piso 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-1.5f, -4.5f, -2.0f));
 		model = glm::scale(model, glm::vec3(50.0f, 5.0f, 50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dadoTexture.UseTexture();
+		/*dadoTexture.UseTexture();*/
+		dirtTexture.UseTexture();
 		meshList[4]->RenderMesh();
-
 
 		//sailor
 		model = glm::mat4(1.0);
@@ -947,7 +894,6 @@ int main()
 		//sailorTexture.UseTexture();
 		meshList[7]->RenderMesh();
 
-
 		//coletas
 		model = glm::mat4(1.0);
 		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
@@ -959,7 +905,6 @@ int main()
 		sailorColetasTexture.UseTexture();
 		coletas.render(); //Renderiza esfera
 
-
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(-1.0f, 1.3f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
@@ -967,7 +912,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		sailorColetasTexture.UseTexture();
 		coletas.render(); //Renderiza esfera
-
 		
 		//sailor coletas
 		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
@@ -980,8 +924,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		//meshList[8]->RenderMeshGeometry();
 
-
-
 		color = glm::vec3(0.0f, 0.0f, 0.0f);
 		model = glm::mat4(1.0);
 		model = modelaux;
@@ -991,36 +933,25 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		//sailorTexture.UseTexture();
 		meshList[8]->RenderMesh();
-
-
-
-
-
-
-
-
-
-		//Dado importado
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-3.0f, 3.0f, -2.0f));
-		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Dado_M.RenderModel();
 		
-
-
-		//DODECAEDRO EN OPENGL
-		/*model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
+		//Lapida
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f , 0.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		dodecaedroTexture.UseTexture();
-		meshList[5]->RenderMesh();*/
+		LapidaPH1.RenderModel();
 
+		//vela
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vela.RenderModel();
 
 		glUseProgram(0);
-
 		mainWindow.swapBuffers();
 	}
-
 	return 0;
 }
