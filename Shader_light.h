@@ -6,9 +6,9 @@
 #include <fstream>
 #include <glew.h>
 #include "CommonValues.h"
-//#include "DirectionalLight.h"
-//#include "PointLight.h"
-//#include "SpotLight.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 
 class Shader
 {
@@ -31,10 +31,9 @@ public:
 	GLuint GetShininessLocation();
 	GLuint GetEyePositionLocation();
 	GLuint getColorLocation();
-
-	//void SetDirectionalLight(DirectionalLight * dLight);
-	//void SetPointLights(PointLight * pLight, unsigned int lightCount);
-	//void SetSpotLights(SpotLight * sLight, unsigned int lightCount);
+	void SetDirectionalLight(DirectionalLight * dLight);
+	void SetPointLights(PointLight * pLight, unsigned int lightCount);
+	void SetSpotLights(SpotLight * sLight, unsigned int lightCount);
 
 	void UseShader();
 	void ClearShader();
@@ -44,14 +43,13 @@ public:
 private:
 	int pointLightCount;
 	int spotLightCount;
-	GLuint shaderID, uniformProjection, uniformModel, uniformColor, uniformView, uniformEyePosition,
-		uniformSpecularIntensity, uniformShininess;
+	GLuint shaderID, uniformProjection, uniformModel, uniformView, uniformEyePosition,
+		uniformSpecularIntensity, uniformShininess, uniformColor;
 
 	struct {
 		GLuint uniformcolor;
 		GLuint uniformAmbientIntensity;
 		GLuint uniformDiffuseIntensity;
-
 		GLuint uniformDirection;
 	} uniformDirectionalLight;
 

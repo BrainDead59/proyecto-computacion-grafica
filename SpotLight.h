@@ -1,7 +1,7 @@
 #pragma once
 #include "PointLight.h"
 class SpotLight :
-	public PointLight
+	public PointLight //spot hereda de point
 {
 public:
 	SpotLight();
@@ -18,7 +18,7 @@ public:
 		GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation,
 		GLuint edgeLocation);
 
-	void SetFlash(glm::vec3 pos, glm::vec3 dir);
+	void SetFlash(glm::vec3 pos, glm::vec3 dir); // para modificar en tiempo real
 	void SetPos(glm::vec3 pos);
 	~SpotLight();
 

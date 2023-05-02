@@ -27,8 +27,15 @@ Práctica 6: Texturizado
 #include "Camera.h"
 #include "Texture.h"
 #include "Sphere.h"
-#include"Model.h"
+#include "Model.h"
 #include "Skybox.h"
+
+//para iluminación
+#include "CommonValues.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
+#include "Material.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
