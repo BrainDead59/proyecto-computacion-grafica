@@ -1,13 +1,12 @@
 #version 330
 
-in vec4 vCol;
+in vec4 vColor;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
-in vec4 vColor;
-
 out vec4 color;
-
+//tambien en common vals, cuantas luces, 8  o 16 max
+// 0 es direccional, 1 de cada una al menos
 const int MAX_POINT_LIGHTS = 3;
 const int MAX_SPOT_LIGHTS = 3;
 
@@ -160,5 +159,6 @@ void main()
 	vec4 finalcolor = CalcDirectionalLight();
 	finalcolor += CalcPointLights();
 	finalcolor += CalcSpotLights();
-	color = texture(theTexture, TexCoord)*vColor;
+	//color = vColor*texture(theTexture, TexCoord);
+	color=finalcolor*vColor*texture(theTexture, TexCoord);
 }

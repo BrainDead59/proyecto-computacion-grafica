@@ -14,6 +14,9 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	width = windowWidth;
 	height = windowHeight;
 	muevex = 2.0f;
+	muevez = 2.0f;
+	muevey = 2.0f;
+	sentidox = 2.0f;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -36,7 +39,7 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	//CREAR VENTANA
-	mainWindow = glfwCreateWindow(width, height, "Practica 6: Texturizado", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Practica 7: Iluminacion 1", NULL, NULL);
 
 	if (!mainWindow)
 	{
@@ -52,7 +55,6 @@ int Window::Initialise()
 
 	//MANEJAR TECLADO y MOUSE
 	createCallbacks();
-
 
 	//permitir nuevas extensiones
 	glewExperimental = GL_TRUE;
@@ -94,8 +96,6 @@ GLfloat Window::getYChange()
 }
 
 
-
-
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -107,13 +107,41 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_Y)
 	{
 		theWindow-> muevex += 1.0;
+		theWindow-> sentidox = 1.0;
 	}
 	if (key == GLFW_KEY_U)
 	{
 		theWindow-> muevex -= 1.0;
+		theWindow-> sentidox = -1.0;
 	}
 
+	if (key == GLFW_KEY_H)
+	{
+		theWindow->muevez += 1.0;
+	}
+	if (key == GLFW_KEY_J)
+	{
+		theWindow->muevez -= 1.0;
+	}
 
+	if (key == GLFW_KEY_N)
+	{
+		theWindow->muevey += 1.0;
+	}
+	if (key == GLFW_KEY_M)
+	{
+		theWindow->muevey -= 1.0;
+	}
+
+	if (key == GLFW_KEY_O)
+	{
+		theWindow->apagalinterna = 1.0;
+	}
+
+	if (key == GLFW_KEY_P)
+	{
+		theWindow->apagalinterna = -1.0;
+	}
 
 	if (key >= 0 && key < 1024)
 	{
