@@ -1,7 +1,7 @@
 #pragma once
 #include "Light.h"
 
-class DirectionalLight :
+class DirectionalLight:
 	public Light
 {
 public:

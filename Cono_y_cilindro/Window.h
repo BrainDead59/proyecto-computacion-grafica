@@ -11,37 +11,22 @@ public:
 	int Initialise();
 	GLfloat getBufferWidth() { return bufferWidth; }
 	GLfloat getBufferHeight() { return bufferHeight; }
-	GLfloat getXChange();
-	GLfloat getYChange();
-	GLfloat getmuevex() { return muevex; }
-	GLfloat getmuevez() { return muevez; }
-	GLfloat getmuevey() { return muevey; }
-	GLfloat getsentidox() { return sentidox; }
-	GLfloat getapagalinterna(){ return apagalinterna; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
 	void swapBuffers() { return glfwSwapBuffers(mainWindow); }
-	
+	GLfloat getrotay() { return rotay; }
+	GLfloat getrotax() { return rotax; }
+	GLfloat getrotaz() { return rotaz; }
+
 	~Window();
 private: 
 	GLFWwindow *mainWindow;
 	GLint width, height;
+	GLfloat rotax,rotay,rotaz;
 	bool keys[1024];
 	GLint bufferWidth, bufferHeight;
 	void createCallbacks();
-	GLfloat lastX;
-	GLfloat lastY;
-	GLfloat sentidox;
-	GLfloat xChange;
-	GLfloat yChange;
-	GLfloat muevex;
-	GLfloat muevez;
-	GLfloat muevey;
-	GLfloat apagalinterna = 1;
-	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
-	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
-
 };
 

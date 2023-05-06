@@ -1,8 +1,3 @@
-/*
-Semestre 2023-2
-Práctica 6: Texturizado
-*/
-//para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
@@ -17,7 +12,6 @@ Práctica 6: Texturizado
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
-#include <gtc\random.hpp>
 //para probar el importer
 //#include<assimp/Importer.hpp>
 
@@ -29,6 +23,14 @@ Práctica 6: Texturizado
 #include "Sphere.h"
 #include"Model.h"
 #include "Skybox.h"
+
+
+//para iluminación
+#include "CommonValues.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
+#include "Material.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -42,18 +44,28 @@ const float PI = 3.14159265f;
 Camera camera;
 
 Texture dirtTexture;
+Texture plainTexture;
 Texture pisoTexture;
-Texture dadoTexture;
 Texture sailorTexture;
 Texture sailorColetasTexture;
 
-Model Camino_M;
 Model LapidaPH1;
 Model vela;
+Model lampara;
 
 Skybox skybox;
 
-Sphere coletas= Sphere(0.5, 20, 20);
+//materiales
+Material Material_brillante;
+Material Material_opaco;
+
+//luz direccional
+DirectionalLight mainLight;
+//para declarar varias luces de tipo pointlight
+PointLight pointLights[MAX_POINT_LIGHTS];
+SpotLight spotLights[MAX_SPOT_LIGHTS];
+
+Sphere coletas = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
@@ -64,8 +76,10 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
-//cálculo del promedio de las normales para sombreado de Phong
-void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
+/*Cálculo del promedio de las normales para sombreado de Phong
+en algunas ocasiones nos ayuda para no tener que declarar las normales manualmente dentro del VAO
+*/
+void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
 	for (size_t i = 0; i < indiceCount; i += 3)
@@ -93,83 +107,7 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 	}
 }
 
-void CreateObjects()
-{
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
-
-	GLfloat vertices[] = {
-		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
-	};
-
-	unsigned int floorIndices[] = {
-		0, 2, 1,
-		1, 2, 3
-	};
-
-	GLfloat floorVertices[] = {
-		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
-		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
-	};
-
-	unsigned int vegetacionIndices[] = {
-		0, 1, 2,
-		0, 2, 3,
-		4,5,6,
-		4,6,7
-	};
-
-	GLfloat vegetacionVertices[] = {
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-		0.0f, -0.5f, -0.5f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, 0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-	};
-	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
-
-
-	
-	Mesh *obj1 = new Mesh();
-	obj1->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj1);
-
-	Mesh *obj2 = new Mesh();
-	obj2->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj2);
-
-	Mesh *obj3 = new Mesh();
-	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
-	meshList.push_back(obj3);
-
-	Mesh* obj4 = new Mesh();
-	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
-	meshList.push_back(obj4);
-
-}
-
-void CreateShaders()
-{
-	Shader *shader1 = new Shader();
-	shader1->CreateFromFiles(vShader, fShader);
-	shaderList.push_back(*shader1);
-}
-
-void CrearDado()
+void CreaPiso()
 {
 	unsigned int cubo_indices[] = {
 		// front
@@ -242,6 +180,13 @@ void CrearDado()
 
 }
 
+void CreateShaders()
+{
+	Shader *shader1 = new Shader();
+	shader1->CreateFromFiles(vShader, fShader);
+	shaderList.push_back(*shader1);
+}
+
 void CrearSailorMoonCabeza()
 {
 	unsigned int sailor_indices[] = {
@@ -294,7 +239,7 @@ void CrearSailorMoonCabeza()
 		43, 44, 49,
 		43, 49, 48
 	};
-	
+
 	GLfloat sailor_vertices[] = {
 
 		//cabeza
@@ -313,7 +258,7 @@ void CrearSailorMoonCabeza()
 		0.33f,  -0.15f,  0.28f,		(0.009f * 79),	(0.009f * 60),		0.0f,	0.0f,	0.0f,	//9
 		0.35f, -0.1f,  0.3f,		(0.009f * 80),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//10
 		0.35f, 0.25f,  0.3f,		(0.009f * 80),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//11
-	
+
 		// derecho
 		//x		y		z			S				T					NX		NY		NZ
 		0.35f, 0.25f,  0.3f,		(0.009f * 83),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//12
@@ -393,7 +338,7 @@ void CrearSailorMoonPelo()
 		14, 15, 16,
 		14, 16, 17,
 		// 36
-		0+18,	1 + 18, 2 + 18,
+		0 + 18,	1 + 18, 2 + 18,
 		1 + 18, 2 + 18, 3 + 18,
 		2 + 18, 3 + 18, 4 + 18,
 		3 + 18, 4 + 18, 5 + 18,
@@ -413,7 +358,7 @@ void CrearSailorMoonPelo()
 		14 + 18, 16 + 18, 17 + 18,
 		//41
 		14, 17, 36,
-		16, 17, 36, 
+		16, 17, 36,
 		15, 16, 37,
 		16, 36, 37,
 		36, 37, 38,
@@ -437,7 +382,7 @@ void CrearSailorMoonPelo()
 		37, 41, 40,
 		37, 40, 44,
 		40, 44, 45
-		
+
 	};
 
 	GLfloat vertices[] = {
@@ -510,160 +455,13 @@ void CrearSailorMoonPelo()
 
 }
 
-void CrearDodecaedro()
-{
-	unsigned int dodecaedro_indices[] = {
-		// sup
-		0,1,2, 
-		0,2,3,
-		0,3,4,
-		// sup lado 1
-		5,6,7,
-		6,7,9,
-		7,8,9,
-		//sup lado 2
-		10,11,12,
-		11,12,13,
-		11,13,14,
-		//sup lado 3
-		15,16,17,
-		16,17,18,
-		16,18,19,
-		//sup lado 4
-		21,22,23,
-		21,23,24,
-		20,21,24,
-		//sup lado 5
-		25,26,27,
-		26,27,29,
-		26,28,29,
-		//INF LADO 1
-		30,31,34,
-		31,33,34,
-		31,32,33,
-		//INF LADO 2
-		35,36,37,
-		35,37,38,
-		35,38,39,
-		//INF LADO 3
-		40,41,44,
-		41,43,44,
-		41,42,43,
-		//INF LADO 4
-		45,46,49,
-		46,48,49,
-		46,47,48,
-		//INF LADO 5
-		50,51,52,
-		50,52,53,
-		50,53,54,
-		// INF
-		55,56,59,
-		56,57,59,
-		57,58,59
-	};
-	
-	GLfloat dodecaedro_vertices[] = {
-		//cara superior (6)
-		//x			y		z	s		t		x		y		z
-		0.0f,	0.62f,	1.62f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, //A 0
-		0.0f,	-0.62f,	1.62f,	0.186f,	0.354f,	0.0f,	0.0f,	0.0f, //C 1
-		1.0f,	-1.0f,	1.0f,	0.226f,	0.221f,	0.0f,	0.0f,	0.0f, //O 2
-		1.62f,	0.0f,	0.62f,	0.365f,	0.221f,	0.0f,	0.0f,	0.0f, //E 3
-		1.0f,	1.0f,	1.0f,	0.406f,	0.354f,	0.0f,	0.0f,	0.0f, //M 4
-		//cara superior lado 1 (5)
-		//x			y		z	s		t		x		y		z
-		0.0f,	-0.62f,	1.62f,	0.186f,	0.354f,	1.0f,	0.0f,	0.0f, //C 5
-		1.0f,	-1.0f,	1.0f,	0.226f,	0.221f,	1.0f,	0.0f,	0.0f, //O 6
-		-1.0f,	-1.0f,	1.0f,	0.055f,	0.344f,	0.0f,	0.0f,	0.0f, //S 7
-		-0.62f,	-1.62f,	0.0f,	0.01f,	0.221f,	0.0f,	0.0f,	0.0f, //L 8
-		0.62f,	-1.62f,	0.0f,	0.113f,	0.141f,	0.0f,	0.0f,	0.0f, //J 9
-		//cara superior lado 2 (4)
-		//x			y		z	s		t		x		y		z
-		1.0f,	-1.0f,	1.0f,	0.236f,	0.211f,	0.0f,	0.0f,	0.0f, //O 10
-		1.62f,	0.0f,	0.62f,	0.365f,	0.211f,	0.0f,	0.0f,	0.0f, //E 11
-		0.62f,	-1.62f,	0.0f,	0.186f,	0.088f,	0.0f,	0.0f,	0.0f, //J 12
-		1.0f,	-1.0f,	-1.0f,	0.295f,	0.01f,	0.0f,	0.0f,	0.0f, //P 13
-		1.62f,	0.0f,	-0.62f,	0.406f,	0.088f,	0.0f,	0.0f,	0.0f, //F 14
-		//cara superior lado 3 (3)
-		//x			y		z	s		t		x		y		z
-		1.62f,	0.0f,	0.62f,	0.365f,	0.221f,	0.0f,	0.0f,	0.0f, //E 15
-		1.0f,	1.0f,	1.0f,	0.406f,	0.354f,	0.0f,	0.0f,	0.0f, //M 16
-		1.62f,	0.0f,	-0.62f,	0.477f,	0.141f,	0.0f,	0.0f,	0.0f, //F 17
-		1.0f,	1.0f,	-1.0f,	0.588f,	0.221f,	0.0f,	0.0f,	0.0f, //N 18
-		0.62f,	1.62f,	0.0f,	0.545f,	0.354f,	0.0f,	0.0f,	0.0f, //I 19
-		//cara superior lado 4 (2)
-		//x			y		z	s		t		x		y		z
-		0.0f,	0.62f,	1.62f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, //A 20
-		1.0f,	1.0f,	1.0f,	0.406f,	0.354f,	0.0f,	0.0f,	0.0f, //M 21
-		0.62f,	1.62f,	0.0f,	0.52f,	0.436f,	0.0f,	0.0f,	0.0f, //I 22
-		-0.62f,	1.62f,	0.0f,	0.479f,	0.56f,	0.0f,	0.0f,	0.0f, //K 23
-		-1.0f,	1.0f,	1.0f,	0.348f,	0.56f,	0.0f,	0.0f,	0.0f, //Q 24
-		//cara superior lado 5 (1)
-		//x			y		z	s		t		x		y		z
-		0.0f,	0.62f,	1.62f,	0.285f,	0.436f,	0.0f,	0.0f,	0.0f, //A 25
-		0.0f,	-0.62f,	1.62f,	0.186f,	0.364f,	1.0f,	0.0f,	0.0f, //C 26
-		-1.0f,	1.0f,	1.0f,	0.252f,	0.55f,	0.0f,	0.0f,	0.0f, //Q 27
-		-1.0f,	-1.0f,	1.0f,	0.09f,	0.436f,	0.0f,	0.0f,	0.0f, //S 28
-		-1.62f,	0.0f,	0.62f,	0.133f,	0.55f,	0.0f,	0.0f,	0.0f, //G 29
-		//cara inferior 1 (7)
-		//x			y		z	s		t		x		y		z
-		-1.62f,	0.0f,	0.62f,	0.60f,	0.91f,	0.0f,	0.0f,	0.0f, //G 30
-		-1.0f,	-1.0f,	1.0f,	0.701f,	0.99f,	0.0f,	0.0f,	0.0f, //S 31
-		-0.62f,	-1.62f,	0.0f,	0.799f,	0.91f,	0.0f,	0.0f,	0.0f, //L 32
-		-1.0f,	-1.0f,	-1.0f,	0.761f,	0.797f,	0.0f,	0.0f,	0.0f, //T 33
-		-1.62f,	0.0f,	-0.62f,	0.641f,	0.797f,	0.0f,	0.0f,	0.0f, //H 34
-		//cara inferior 2 (8)
-		//x			y		z	s		t		x		y		z
-		1.0f,	-1.0f,	-1.0f,	0.953f,	0.652f,	0.0f,	0.0f,	0.0f, //P 35
-		0.62f,	-1.62f,	0.0f,	0.99f,	0.787f,	0.0f,	0.0f,	0.0f, //J 36
-		-0.62f,	-1.62f,	0.0f,	0.881f,	0.859f,	0.0f,	0.0f,	0.0f, //L 37
-		-1.0f,	-1.0f,	-1.0f,	0.771f,	0.787f,	0.0f,	0.0f,	0.0f, //T 38
-		0.0f,	-0.62f,	-1.62f,	0.813f,	0.652f,	0.0f,	0.0f,	0.0f, //D 39
-		//cara inferior 3 (9)
-		//x			y		z	s		t		x		y		z
-		0.0f,	-0.62f,	-1.62f,	0.813f,	0.652f,	0.0f,	0.0f,	0.0f, //D 40
-		1.0f,	-1.0f,	-1.0f,	0.924f,	0.57f,	0.0f,	0.0f,	0.0f, //P 41
-		1.62f,	0.0f,	-0.62f,	0.881f,	0.436f,	0.0f,	0.0f,	0.0f, //F 42
-		1.0f,	1.0f,	-1.0f,	0.748f,	0.436f,	0.0f,	0.0f,	0.0f, //N 43
-		0.0f,	0.62f,	-1.62f,	0.701f,	0.57f,	0.0f,	0.0f,	0.0f, //B 44
-		//cara inferior 4 (10)
-		//x			y		z	s		t		x		y		z
-		0.0f,	0.62f,	-1.62f,	0.701f,	0.57f,	0.0f,	0.0f,	0.0f, //B 45
-		1.0f,	1.0f,	-1.0f,	0.658f,	0.436f,	0.0f,	0.0f,	0.0f, //N 46
-		0.62f,	1.62f,	0.0f,	0.52f,	0.436f,	0.0f,	0.0f,	0.0f, //I 47
-		-0.62f,	1.62f,	0.0f,	0.479f,	0.57f,	0.0f,	0.0f,	0.0f, //K 48
-		-1.0f,	1.0f,	-1.0f,	0.588f,	0.642f,	0.0f,	0.0f,	0.0f, //R 49
-		//cara inferior 4 (11)
-		//x			y		z	s		t		x		y		z
-		-0.62f,	1.62f,	0.0f,	0.461f,	0.662f,	0.0f,	0.0f,	0.0f, //K 50
-		-1.0f,	1.0f,	-1.0f,	0.578f,	0.662f,	0.0f,	0.0f,	0.0f, //R 51
-		-1.62f,	0.0f,	-0.62f,	0.631f,	0.787f,	0.0f,	0.0f,	0.0f, //H 52
-		-1.62f,	0.0f,	0.62f,	0.52f,	0.859f,	0.0f,	0.0f,	0.0f, //G 53
-		-1.0f,	1.0f,	1.0f,	0.41f,	0.787f,	0.0f,	0.0f,	0.0f, //Q 54
-		//CARA INF (12)
-		//x			y		z	s		t		x		y		z
-		-1.0f,	1.0f,	-1.0f,	0.598f,	0.652f,	0.0f,	0.0f,	0.0f, //R 55
-		-1.62f,	0.0f,	-0.62f,	0.641f,	0.777f,	0.0f,	0.0f,	0.0f, //H 56
-		-1.0f,	-1.0f,	-1.0f,	0.761f,	0.777f,	0.0f,	0.0f,	0.0f, //T 57
-		0.0f,	-0.62f,	-1.62f,	0.803f,	0.652f,	0.0f,	0.0f,	0.0f, //D 58
-		0.0f,	0.62f,	-1.62f,	0.701f,	0.58f,	0.0f,	0.0f,	0.0f, //B 59
-
-	};
-
-	Mesh* dodecaedro = new Mesh();
-	dodecaedro->CreateMesh(dodecaedro_vertices, dodecaedro_indices, 480, 108);
-	meshList.push_back(dodecaedro);
-
-}
-
 void CrearTorzo()
 {
 	unsigned int indices[] = {
 		// sup
 		0,1,2,
-		
-	
+
+
 	};
 
 	GLfloat vertices[] = {
@@ -672,7 +470,7 @@ void CrearTorzo()
 		1.0f,	0.0f,	1.0f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, // 0
 		-1.0f,	0.0f,	1.0f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, // 1
 		0.0f,	2.0f,	1.0f,	0.295f,	0.436f,	0.0f,	0.0f,	0.0f, // 2
-		
+
 
 	};
 
@@ -774,42 +572,43 @@ void CrearCilindro(int res, float R) {
 	meshList.push_back(cilindro);
 }
 
-
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
-	CreateObjects();
-	CrearDado();
+	float apagaluz;
+
+	CreaPiso();
 	CreateShaders();
-	CrearDodecaedro();
 	CrearSailorMoonCabeza();
 	CrearSailorMoonPelo();
 	CrearTorzo();
-	//CrearCilindro(50, 1.0f);
+	CrearCilindro(50, 1.0f);
 
 	coletas.init();
 	coletas.load();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
 	dirtTexture = Texture("Textures/dirt.png");
 	dirtTexture.LoadTextureA();
+	plainTexture = Texture("Textures/plain.png");
+	plainTexture.LoadTextureA();
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
-	dadoTexture = Texture("Textures/dadoe.jpg");
-	dadoTexture.LoadTextureA();
 	sailorTexture = Texture("Textures/sailormoon_textura.png");
 	sailorTexture.LoadTextureA();
 	sailorColetasTexture = Texture("Textures/coletas.png");
 	sailorColetasTexture.LoadTextureA();
 
-	LapidaPH1 = Model();
-	LapidaPH1.LoadModel("Models/lapidaPH1.obj");
 
 	vela = Model();
 	vela.LoadModel("Models/vela.obj");
+	lampara = Model();
+	lampara.LoadModel("Models/lampara.obj");
+	LapidaPH1 = Model();
+	LapidaPH1.LoadModel("Models/miLapida.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -821,10 +620,61 @@ int main()
 
 	skybox = Skybox(skyboxFaces);
 
+	Material_brillante = Material(4.0f, 256);
+	Material_opaco = Material(0.3f, 4);
+
+	//posición inicial del helicóptero
+	glm::vec3 posblackhawk = glm::vec3(-20.0f, 6.0f, -1.0);
+
+	//luz direccional, sólo 1 y siempre debe de existir
+	//luz direccional es el sol\
+	// 1 ambiental al maximo, 0 todo negro
+	//difusa 1 por caras
+	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f,
+		0.0f, 0.0f, -1.0f);
+
+	//contador de luces puntuales
+	unsigned int pointLightCount = 0;
+
+	//Veladora
+	pointLights[0] = PointLight(1.0f, 0.5f, 0.0f,
+		1.0f, 10.0f,
+		0.0f, 1.0f, 25.0f,
+		0.3f, 0.2f, 0.1f);//ec de 2do grado
+	pointLightCount++;
+
+	//Lampara
+	pointLights[1] = PointLight(1.0f, 0.9f, 0.0f,
+		1.0f, 10.0f,
+		0.0f, 1.0f, 45.0f,
+		0.3f, 0.1f, 0.1f);//ec de 2do grado
+	pointLightCount++;
+
+	unsigned int spotLightCount = 0;
+
+	/*luz de tipo Spotlight
+	spotLights[0] = SpotLight(0.4f, 0.4f, 0.0f,
+		0.8f, 0.8f,
+		0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		5.0f);
+	spotLightCount++;*/
+
+	//Luz de la lampara - camara
+	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
+		0.0f, 2.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);//alcance
+	spotLightCount++;
+	
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformSpecularIntensity = 0, uniformShininess = 0;
-	GLuint uniformColor = 0;
+		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -847,32 +697,49 @@ int main()
 		uniformProjection = shaderList[0].GetProjectionLocation();
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
+
+		//información en el shader de intensidad especular y brillo
+		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+		uniformShininess = shaderList[0].GetShininessLocation();
 		uniformColor = shaderList[0].getColorLocation();
+
+		//color blanco inicializado para todos los objetos a menos que se asigne nuevo color
+		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
+		//luz ligada a la cámara de tipo flash 
+		glm::vec3 lowerLight = camera.getCameraPosition();
+		lowerLight.y -= 0.3f;
+		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+		apagaluz=mainWindow.getapagalinterna();
+
+		//información al shader de fuentes de iluminación
+		shaderList[0].SetDirectionalLight(&mainLight);
+		shaderList[0].SetPointLights(pointLights, pointLightCount);
+
+		//prende y apaga linterna
+		if (apagaluz < 1.0) {
+			 shaderList[0].SetSpotLights(spotLights, spotLightCount-1);
+		}
+		else {
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}
+
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
-		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(400.0f, 20.0f, 400.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		pisoTexture.UseTexture();
 
-		//pisoTexture.UseTexture();
-		//meshList[2]->RenderMesh();
-
-		//Piso 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-1.5f, -4.5f, -2.0f));
-		model = glm::scale(model, glm::vec3(50.0f, 5.0f, 50.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		/*dadoTexture.UseTexture();*/
-		dirtTexture.UseTexture();
-		meshList[4]->RenderMesh();
+		//agregar material al plano de piso
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[0]->RenderMesh();
 
 		//sailor
 		model = glm::mat4(1.0);
@@ -881,77 +748,84 @@ int main()
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		sailorTexture.UseTexture();
-		meshList[6]->RenderMesh();
+		meshList[1]->RenderMesh();
 
 		//sailor pelo
 		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
 		model = glm::mat4(1.0);
 		model = modelaux;
-		//model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		//sailorTexture.UseTexture();
-		meshList[7]->RenderMesh();
+		meshList[2]->RenderMesh();
 
-		//coletas
+		//coletas sailor
 		model = glm::mat4(1.0);
 		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(1.0f, 1.3f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		sailorColetasTexture.UseTexture();
 		coletas.render(); //Renderiza esfera
 
+		//coletas sailor
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(-1.0f, 1.3f, -1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		sailorColetasTexture.UseTexture();
 		coletas.render(); //Renderiza esfera
-		
-		//sailor coletas
-		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
-		model = glm::mat4(1.0);
-		model = modelaux;
-		//model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
-		model = glm::scale(model, glm::vec3(0.2f, 3.0f, 0.2f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		//meshList[8]->RenderMeshGeometry();
 
+		//cuerpo sailor
 		color = glm::vec3(0.0f, 0.0f, 0.0f);
 		model = glm::mat4(1.0);
 		model = modelaux;
-		//model = glm::translate(model, glm::vec3(-1.5f, 4.5f, -2.0f));
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		//sailorTexture.UseTexture();
-		meshList[8]->RenderMesh();
+		meshList[3]->RenderMesh();
 		
+		//Regresar el color normal
+		color = glm::vec3(1.f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+
+		//Vela
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 25.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vela.RenderModel();
+
+		//Lampara
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 45.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		lampara.RenderModel();
+
 		//Lapida
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(4.0f , 0.5f, 0.0f));
+		model = glm::translate(model, glm::vec3(15.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH1.RenderModel();
 
-		//vela
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		vela.RenderModel();
+		//Cilindro
+		model = glm::mat4(1.0f);
+		color = glm::vec3(0.5f, 0.5f, 0.4f);
+		model = glm::translate(model, glm::vec3(1.25f, 10.0f, -3.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		meshList[4]->RenderMeshGeometry();
 
 		glUseProgram(0);
+
 		mainWindow.swapBuffers();
 	}
+
 	return 0;
 }

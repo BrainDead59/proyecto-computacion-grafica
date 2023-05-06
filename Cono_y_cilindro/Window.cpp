@@ -13,10 +13,9 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 {
 	width = windowWidth;
 	height = windowHeight;
-	muevex = 2.0f;
-	muevez = 2.0f;
-	muevey = 2.0f;
-	sentidox = 2.0f;
+	rotax = 0.0f;
+	rotay = 0.0f;
+	rotaz = 0.0f;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -39,7 +38,7 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	//CREAR VENTANA
-	mainWindow = glfwCreateWindow(width, height, "Practica 7: Iluminacion 1", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Practica 2: Introduccion", NULL, NULL);
 
 	if (!mainWindow)
 	{
@@ -55,6 +54,7 @@ int Window::Initialise()
 
 	//MANEJAR TECLADO y MOUSE
 	createCallbacks();
+
 
 	//permitir nuevas extensiones
 	glewExperimental = GL_TRUE;
@@ -79,22 +79,7 @@ int Window::Initialise()
 void Window::createCallbacks()
 {
 	glfwSetKeyCallback(mainWindow, ManejaTeclado);
-	glfwSetCursorPosCallback(mainWindow, ManejaMouse);
 }
-GLfloat Window::getXChange()
-{
-	GLfloat theChange = xChange;
-	xChange = 0.0f;
-	return theChange;
-}
-
-GLfloat Window::getYChange()
-{
-	GLfloat theChange = yChange;
-	yChange = 0.0f;
-	return theChange;
-}
-
 
 void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode)
 {
@@ -104,43 +89,25 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+
 	if (key == GLFW_KEY_Y)
 	{
-		theWindow-> muevex += 1.0;
-		theWindow-> sentidox = 1.0;
+		theWindow->rotay += 10.0; //rotar sobre el eje y 10 grados
 	}
-	if (key == GLFW_KEY_U)
+	else if (key == GLFW_KEY_X)
 	{
-		theWindow-> muevex -= 1.0;
-		theWindow-> sentidox = -1.0;
+		theWindow->rotax += 10.0;
 	}
-
-	if (key == GLFW_KEY_H)
+	else if (key == GLFW_KEY_Z)
 	{
-		theWindow->muevez += 1.0;
-	}
-	if (key == GLFW_KEY_J)
-	{
-		theWindow->muevez -= 1.0;
+		theWindow->rotaz += 10.0;
 	}
 
-	if (key == GLFW_KEY_N)
-	{
-		theWindow->muevey += 1.0;
-	}
-	if (key == GLFW_KEY_M)
-	{
-		theWindow->muevey -= 1.0;
-	}
 
-	if (key == GLFW_KEY_O)
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 	{
-		theWindow->apagalinterna = 1.0;
-	}
-
-	if (key == GLFW_KEY_P)
-	{
-		theWindow->apagalinterna = -1.0;
+		const char* key_name = glfwGetKeyName(GLFW_KEY_D, 0);
+		printf("se presiono la tecla: %s\n",key_name);
 	}
 
 	if (key >= 0 && key < 1024)
@@ -157,25 +124,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		}
 	}
 }
-
-void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)
-{
-	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-
-	if (theWindow->mouseFirstMoved)
-	{
-		theWindow->lastX = xPos;
-		theWindow->lastY = yPos;
-		theWindow->mouseFirstMoved = false;
-	}
-
-	theWindow->xChange = xPos - theWindow->lastX;
-	theWindow->yChange = theWindow->lastY - yPos;
-
-	theWindow->lastX = xPos;
-	theWindow->lastY = yPos;
-}
-
 
 Window::~Window()
 {

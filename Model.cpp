@@ -9,8 +9,8 @@ Model::Model()
 void Model::LoadModel(const std::string & fileName)
 {
 	Assimp::Importer importer;//					Pasa de Polygons y Quads a triangulos, modifica orden para el origen, generar normales si el  objeto no tiene, trata vértices iguales como 1 solo
-	//const aiScene *scene=importer.ReadFile(fileName,aiProcess_Triangulate |aiProcess_FlipUVs|aiProcess_GenSmoothNormals|aiProcess_JoinIdenticalVertices);
-	const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
+	const aiScene *scene=importer.ReadFile(fileName,aiProcess_Triangulate |aiProcess_GenSmoothNormals|aiProcess_JoinIdenticalVertices);
+	//const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate);
 	if (!scene)
 	{	
 		printf("Falló en cargar el modelo: %s \n", fileName, importer.GetErrorString());
@@ -55,8 +55,6 @@ void Model::RenderModel()
 		MeshList[i]->RenderMesh();
 
 	}
-
-
 }
 
 
@@ -126,7 +124,7 @@ void Model::LoadMaterials(const aiScene * scene)
 				int idx = std::string(path.data).rfind("\\");//para quitar del path del modelo todo lo que este antes del \ de ubicación de directorio
 				std::string filename = std::string(path.data).substr(idx + 1);
 				std::string tga ="tga";
-				std::string png = "png";
+				std::string png ="png";
 				std::size_t existetga = filename.find(tga);
 				std::size_t existepng= filename.find(png);
 				std::string texPath = std::string("Textures/") + filename;
