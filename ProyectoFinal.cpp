@@ -50,6 +50,7 @@ Texture sailorTexture;
 Texture sailorColetasTexture;
 
 Model LapidaPH1;
+Model LapidaPH2;
 Model vela;
 Model lampara;
 
@@ -608,7 +609,9 @@ int main()
 	lampara = Model();
 	lampara.LoadModel("Models/lampara.obj");
 	LapidaPH1 = Model();
-	LapidaPH1.LoadModel("Models/miLapida.obj");
+	LapidaPH1.LoadModel("Models/miLapidaA.obj");
+	LapidaPH2 = Model();
+	LapidaPH2.LoadModel("Models/miLapidaB.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -733,7 +736,7 @@ int main()
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(400.0f, 20.0f, 400.0f));
+		model = glm::scale(model, glm::vec3(200.0f, 20.0f, 200.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pisoTexture.UseTexture();
 
@@ -775,14 +778,14 @@ int main()
 		sailorColetasTexture.UseTexture();
 		coletas.render(); //Renderiza esfera
 
-		//cuerpo sailor
-		color = glm::vec3(0.0f, 0.0f, 0.0f);
-		model = glm::mat4(1.0);
-		model = modelaux;
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		meshList[3]->RenderMesh();
+		////cuerpo sailor
+		//color = glm::vec3(0.0f, 0.0f, 0.0f);
+		//model = glm::mat4(1.0);
+		//model = modelaux;
+		//model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//meshList[3]->RenderMesh();
 		
 		//Regresar el color normal
 		color = glm::vec3(1.f, 1.0f, 1.0f);
@@ -804,23 +807,53 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lampara.RenderModel();
 
-		//Lapida
+		//LapidaA
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(15.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 90.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH1.RenderModel();
+
+		//LapidaA
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, -90.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH1.RenderModel();
+
+		//LapidaA
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(90.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH1.RenderModel();
 
-		//Cilindro
-		model = glm::mat4(1.0f);
-		color = glm::vec3(0.5f, 0.5f, 0.4f);
-		model = glm::translate(model, glm::vec3(1.25f, 10.0f, -3.0f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		meshList[4]->RenderMeshGeometry();
+		//LapidaB
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, -90.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH2.RenderModel();
+
+		//LapidaB
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, 90.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH2.RenderModel();
+
+		////Cilindro
+		//model = glm::mat4(1.0f);
+		//color = glm::vec3(0.5f, 0.5f, 0.4f);
+		//model = glm::translate(model, glm::vec3(1.25f, 10.0f, -3.0f));
+		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		//model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
+		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		//meshList[4]->RenderMeshGeometry();
 
 		glUseProgram(0);
 
