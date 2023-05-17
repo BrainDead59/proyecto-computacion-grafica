@@ -34,6 +34,13 @@
 
 const float toRadians = 3.14159265f / 180.0f;
 
+//Variables animaciones
+float incrementoManoHuesoY = 0;
+float offsetIncrementoManoHuesoY = 0.1;
+int banderaincrementoManoHuesoY = 0;
+
+
+//Variables de configuración
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -64,7 +71,6 @@ Model manoEsqueleto;
 Model coleta;
 Model chongo;
 Model brazo;
-
 
 Skybox skybox;
 
@@ -505,8 +511,6 @@ void CrearSailorMoonPelo()
 
 }
 
-
-
 void CrearCilindro(int res, float R) {
 
 	//constantes utilizadas en los ciclos for
@@ -599,6 +603,26 @@ void CrearCilindro(int res, float R) {
 	meshList.push_back(cilindro);
 }
 
+void subenManosTumbas(){
+	if (banderaincrementoManoHuesoY == 0) {
+		if (incrementoManoHuesoY < 10.0f) {
+			incrementoManoHuesoY += offsetIncrementoManoHuesoY * deltaTime;
+		}
+		else {
+			banderaincrementoManoHuesoY = 1;
+		}
+	}
+	if (banderaincrementoManoHuesoY == 1) {
+		if (incrementoManoHuesoY > 0.0f) {
+			incrementoManoHuesoY -= offsetIncrementoManoHuesoY * deltaTime;
+		}
+		else {
+			banderaincrementoManoHuesoY = 0;
+		}
+	}
+	
+}
+
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -610,7 +634,6 @@ int main()
 	CreateShaders();
 	CrearSailorMoonCabeza();
 	CrearSailorMoonPelo();
-
 	CrearCilindro(50, 1.0f);
 
 	coletas.init();
@@ -675,9 +698,6 @@ int main()
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
-	//posición inicial del helicóptero
-	glm::vec3 posblackhawk = glm::vec3(-20.0f, 6.0f, -1.0);
-
 	//luz direccional, sólo 1 y siempre debe de existir
 	//luz direccional es el sol\
 	// 1 ambiental al maximo, 0 todo negro
@@ -734,6 +754,8 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
+
+		subenManosTumbas();
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -793,9 +815,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[0]->RenderMesh();
 
-
-
-		// SAILOR MOON //////////////////////////////////////////////////////////////
+		/////////////////////////////////////////// SAILOR MOON //////////////////////////////////////////////////////////////
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 4.5f, 0.0f));
 		modelaux = model;
@@ -813,7 +833,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		meshList[2]->RenderMesh();
 
-
 		//chongos
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(1.0f, 1.2f, -1.0f));
@@ -830,8 +849,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		sailorColetasTexture.UseTexture();
 		chongo.RenderModel();
-
-
 
 		//coleta
 		model = modelaux;
@@ -870,6 +887,8 @@ int main()
 		color = glm::vec3(1.f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 
+
+		//////////////////////////////////////////// MODELOS DEL AMBIENTE ////////////////////////////////////////
 		//Vela
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 25.0f));
@@ -1021,19 +1040,72 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		tumba.RenderModel();
 
-		//Mano esqueleto
+		//Mano esqueleto - derecha tercera
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(47.0f, 0.0f, 63.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		model = glm::rotate(model, 190 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(56.0f, -17.0f + incrementoManoHuesoY, 55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		manoEsqueleto.RenderModel();
 
-		//Mano esqueleto
+		//Mano esqueleto - derecha segunda
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 63.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		model = glm::rotate(model, 150 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(6.0f, -17.0f + incrementoManoHuesoY, 55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - derecha primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-44.0f, -17.0f + incrementoManoHuesoY, 55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - frente primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(57.0f, -17.0f + incrementoManoHuesoY, -56.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - frente segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(57.0f, -17.0f + incrementoManoHuesoY, -6.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - frente tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(57.0f, -17.0f + incrementoManoHuesoY, 44.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - izquierda tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(44.0f, -17.0f + incrementoManoHuesoY, -55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - izquierda segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-6.0f, -17.0f + incrementoManoHuesoY, -55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto - izquierda primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-56.0f, -17.0f + incrementoManoHuesoY, -55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		manoEsqueleto.RenderModel();
 
@@ -1294,10 +1366,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		camino.RenderModel();
 
-
-
-
-
 		////Cilindro
 		//model = glm::mat4(1.0f);
 		//color = glm::vec3(0.5f, 0.5f, 0.4f);
@@ -1312,6 +1380,5 @@ int main()
 
 		mainWindow.swapBuffers();
 	}
-
 	return 0;
 }
