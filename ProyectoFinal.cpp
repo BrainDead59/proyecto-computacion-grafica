@@ -55,6 +55,7 @@ Texture plainTexture;
 Texture pisoTexture;
 Texture sailorTexture;
 Texture sailorColetasTexture;
+Texture traje;
 
 Model LapidaPH1;
 Model LapidaPH2;
@@ -71,6 +72,7 @@ Model manoEsqueleto;
 Model coleta;
 Model chongo;
 Model brazo;
+Model torzo;
 
 Skybox skybox;
 
@@ -685,6 +687,9 @@ int main()
 	brazo = Model();
 	brazo.LoadModel("Models/mano.obj");
 
+	torzo = Model();
+	torzo.LoadModel("Models/cuerpo.obj");
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
@@ -871,8 +876,15 @@ int main()
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		brazo.RenderModel();
+		//brazo.RenderModel();
 
+		//torzo
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		torzo.RenderModel();
 
 		////cuerpo sailor
 		//color = glm::vec3(0.0f, 0.0f, 0.0f);
