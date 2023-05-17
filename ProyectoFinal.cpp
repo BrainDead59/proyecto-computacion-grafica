@@ -51,8 +51,15 @@ Texture sailorColetasTexture;
 
 Model LapidaPH1;
 Model LapidaPH2;
+Model LapidaPH3;
 Model vela;
 Model lampara;
+Model arbolA;
+Model calabaza;
+Model reja;
+Model camino;
+Model tumba;
+Model manoEsqueleto;
 
 Skybox skybox;
 
@@ -596,13 +603,12 @@ int main()
 	dirtTexture.LoadTextureA();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureA();
-	pisoTexture = Texture("Textures/piso.tga");
+	pisoTexture = Texture("Textures/FondoPiso.jpg");
 	pisoTexture.LoadTextureA();
 	sailorTexture = Texture("Textures/sailormoon_textura.png");
 	sailorTexture.LoadTextureA();
 	sailorColetasTexture = Texture("Textures/coletas.png");
 	sailorColetasTexture.LoadTextureA();
-
 
 	vela = Model();
 	vela.LoadModel("Models/vela.obj");
@@ -612,6 +618,20 @@ int main()
 	LapidaPH1.LoadModel("Models/miLapidaA.obj");
 	LapidaPH2 = Model();
 	LapidaPH2.LoadModel("Models/miLapidaB.obj");
+	LapidaPH3 = Model();
+	LapidaPH3.LoadModel("Models/miLapidaC.obj");
+	arbolA = Model();
+	arbolA.LoadModel("Models/ArbolA.obj");
+	calabaza = Model();
+	calabaza.LoadModel("Models/calabaza.obj");
+	reja = Model();
+	reja.LoadModel("Models/rejaA.obj");
+	camino = Model();
+	camino.LoadModel("Models/caminoJuegos.obj");
+	tumba = Model();
+	tumba.LoadModel("Models/tumba.obj");
+	manoEsqueleto = Model();
+	manoEsqueleto.LoadModel("Models/esqueleto.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -807,43 +827,413 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lampara.RenderModel();
 
-		//LapidaA
+		//LapidaC - frente primero
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 90.0f));
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, -50.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		LapidaPH1.RenderModel();
+		LapidaPH3.RenderModel();
 
-		//LapidaA
+		//LapidaB - frente segundo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, -90.0f));
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(70.0f, 3.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		LapidaPH1.RenderModel();
+		LapidaPH2.RenderModel();
 
-		//LapidaA
+		//LapidaA - frente tercero
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(90.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 50.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH1.RenderModel();
 
-		//LapidaB
+		//LapidaC - izquierda primero
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(50.0f, 0.0f, -90.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, -70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH3.RenderModel();
+
+		//LapidaB - izquierda segundo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 3.0f, -70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH2.RenderModel();
+
+		//LapidaA - izquierda tercero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, -70.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH1.RenderModel();
+
+		//LapidaA - derecha primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		LapidaPH1.RenderModel();
+
+		//LapidaB - derecha segundo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 3.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH2.RenderModel();
 
-		//LapidaB
+		//LapidaC - derecha tercero
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, 90.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		LapidaPH2.RenderModel();
+		LapidaPH3.RenderModel();
+
+		//tumbaTierra - izquierda primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, -60.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - izquierda segundo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -60.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - izquierda tercero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, -60.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - frente segundo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - frente tercero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 50.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - frente primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, -50.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - derecha primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - derecha segundo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//tumbaTierra - derecha tercero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tumba.RenderModel();
+
+		//Mano esqueleto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(47.0f, 0.0f, 63.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 190 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Mano esqueleto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 63.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 150 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoEsqueleto.RenderModel();
+
+		//Arbol - derecha fondo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(40.0f, 3.0f, 80.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolA.RenderModel();
+
+		//Arbol - derecha primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 3.0f, 80.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolA.RenderModel();
+
+		//Arbol - izquierda primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 3.0f, -80.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolA.RenderModel();
+
+		//Arbol - izquierda fondo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(40.0f, 3.0f, -80.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 2.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolA.RenderModel();
+
+		//Calabaza frente primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, -40.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza frente segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza frente tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 60.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza izquierda segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -70.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza izquierda primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, -70.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza izquierda tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(40.0f, 0.0f, -70.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza derecha segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza derecha primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Calabaza derecha tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(40.0f, 0.0f, 70.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		calabaza.RenderModel();
+
+		//Reja superior izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(80.0f, 0.0f, -95.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(42.0f, 0.0f, -95.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, -95.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-34.0f, 0.0f, -95.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-72.0f, 0.0f, -95.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(95.0f, 0.0f, -73.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(95.0f, 0.0f, -35.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(95.0f, 0.0f, 3.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(95.0f, 0.0f, 41.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(95.0f, 0.0f, 79.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior inferior
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(72.0f, 0.0f, 98.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior inferior
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(34.0f, 0.0f, 98.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior inferior
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-4.0f, 0.0f, 98.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior inferior
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-42.0f, 0.0f, 98.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja superior inferior
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-80.0f, 0.0f, 98.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja frente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, -80.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja frente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, -42.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja frente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, 75.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Reja frente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, 37.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		reja.RenderModel();
+
+		//Camino de piedra
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-80.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		camino.RenderModel();
 
 		////Cilindro
 		//model = glm::mat4(1.0f);

@@ -1,13 +1,12 @@
 # Blender 3.5.1 MTL File: 'None'
 # www.blender.org
 
-newmtl Grave_Tip_D_LP
+newmtl Material.001
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 1
-map_Kd tip_D_LP_DefaultMaterial_BaseColor.png
-map_Ns tip_D_LP_DefaultMaterial_Roughness.png
-map_refl tip_D_LP_DefaultMaterial_Metallic.png
+illum 2
+map_Kd Grave06_diffuse.tga.png
+map_Ks Grave06_specular.tga.png

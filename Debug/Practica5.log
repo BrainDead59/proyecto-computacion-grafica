@@ -2,8 +2,7 @@
   ProyectoFinal.cpp
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(568,16): warning C4018: '<': no coinciden signed/unsigned
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(684,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(686,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(575,16): warning C4018: '<': no coinciden signed/unsigned
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(704,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(706,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
   Practica5.vcxproj -> C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Debug\ProyectoFinal.exe
