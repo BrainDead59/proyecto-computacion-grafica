@@ -1,10 +1,19 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: El directorio intermedio (Debug\) contiene archivos compartidos de otro proyecto (Practica7.vcxproj). Esto puede dar lugar a un comportamiento incorrecto de limpieza y recompilación.
   ProyectoFinal.cpp
+<<<<<<< HEAD
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(39,39): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(599,16): warning C4018: '<': no coinciden signed/unsigned
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(755,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(757,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+=======
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\ProyectoFinal.cpp(39,39): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\ProyectoFinal.cpp(600,16): warning C4018: '<': no coinciden signed/unsigned
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\ProyectoFinal.cpp(758,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\ProyectoFinal.cpp(760,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+>>>>>>> 1c49c5ede86b33c41d96976f41d3864ee78499d6
 LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
-  Practica5.vcxproj -> C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Debug\ProyectoFinal.exe
+  Practica5.vcxproj -> C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal\Debug\ProyectoFinal.exe
