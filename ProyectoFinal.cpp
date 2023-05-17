@@ -68,6 +68,7 @@ Model reja;
 Model camino;
 Model tumba;
 Model manoEsqueleto;
+Model arcade;
 
 Model coleta;
 Model chongo;
@@ -676,7 +677,8 @@ int main()
 	tumba.LoadModel("Models/tumba.obj");
 	manoEsqueleto = Model();
 	manoEsqueleto.LoadModel("Models/esqueleto.obj");
-
+	arcade = Model();
+	arcade.LoadModel("Models/arcade.obj");
 
 	coleta = Model();
 	coleta.LoadModel("Models/coleta.obj");
@@ -1377,6 +1379,14 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		camino.RenderModel();
+
+		//Expendora
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcade.RenderModel();
 
 		////Cilindro
 		//model = glm::mat4(1.0f);
