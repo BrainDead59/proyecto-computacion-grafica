@@ -24,7 +24,6 @@
 #include"Model.h"
 #include "Skybox.h"
 
-
 //para iluminación
 #include "CommonValues.h"
 #include "DirectionalLight.h"
@@ -39,8 +38,10 @@ float incrementoManoHuesoY = 0;
 float offsetIncrementoManoHuesoY = 0.1;
 int banderaincrementoManoHuesoY = 0;
 
-
 //Variables de configuración
+float toffsetu = 0.0f;
+float toffsetv = 0.0f;
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -56,6 +57,8 @@ Texture pisoTexture;
 Texture sailorTexture;
 Texture sailorColetasTexture;
 Texture traje;
+Texture fachada;
+Texture letrero;
 
 Model LapidaPH1;
 Model LapidaPH2;
@@ -69,6 +72,8 @@ Model camino;
 Model tumba;
 Model manoEsqueleto;
 Model arcade;
+Model expendedora;
+Model banco;
 
 Model coleta;
 Model chongo;
@@ -152,8 +157,7 @@ void CreaPiso()
 		20, 21, 22,
 		22, 23, 20,
 	};
-	//Ejercicio 1: reemplazar con sus dados de 6 caras texturizados, agregar normales
-// average normals
+
 	GLfloat cubo_vertices[] = {
 		// front
 		//x		y		z		S		T			NX		NY		NZ
@@ -196,10 +200,31 @@ void CreaPiso()
 
 	};
 
-	Mesh* dado = new Mesh();
-	dado->CreateMesh(cubo_vertices, cubo_indices, 192, 36);
-	meshList.push_back(dado);
+	Mesh* piso = new Mesh();
+	piso->CreateMesh(cubo_vertices, cubo_indices, 192, 36);
+	meshList.push_back(piso);
 
+}
+
+void CreaParedesGamecenter() {
+	unsigned int pared_indices[] = {
+		0,1,2,
+		0,3,2,
+	};
+
+	GLfloat pared_vertices[] = {
+		// front
+		//x		y		z		S		T			NX		NY		NZ
+		-1.0f, 0.0f, 0.0f,		0.0f,  0.0f,		0.0f,	0.0f,	-1.0f,	//0
+		 0.0f, 0.0f, 0.0f,		1.0f,	0.0f,		0.0f,	0.0f,	-1.0f,	//1
+		 0.0f, 1.0f, 0.0f,		1.0f,	1.0f,		0.0f,	0.0f,	-1.0f,	//2
+		-1.0f, 1.0f, 0.0f,		0.0f,	1.0f,		0.0f,	0.0f,	-1.0f,	//3
+		
+	};
+
+	Mesh* dado = new Mesh();
+	dado->CreateMesh(pared_vertices, pared_indices, 32,6);
+	meshList.push_back(dado);
 }
 
 void CreateShaders()
@@ -631,13 +656,12 @@ int main()
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
-	float apagaluz;
-
 	CreaPiso();
 	CreateShaders();
 	CrearSailorMoonCabeza();
 	CrearSailorMoonPelo();
 	CrearCilindro(50, 1.0f);
+	CreaParedesGamecenter();
 
 	coletas.init();
 	coletas.load();
@@ -654,6 +678,10 @@ int main()
 	sailorTexture.LoadTextureA();
 	sailorColetasTexture = Texture("Textures/coletas.png");
 	sailorColetasTexture.LoadTextureA();
+	fachada = Texture("Textures/fachada.png");
+	fachada.LoadTextureA();
+	letrero = Texture("Textures/letrero.png");
+	letrero.LoadTextureA();
 
 	vela = Model();
 	vela.LoadModel("Models/vela.obj");
@@ -677,18 +705,19 @@ int main()
 	tumba.LoadModel("Models/tumba.obj");
 	manoEsqueleto = Model();
 	manoEsqueleto.LoadModel("Models/esqueleto.obj");
+	banco = Model();
+	banco.LoadModel("Models/banquito.obj");
 	arcade = Model();
 	arcade.LoadModel("Models/arcade.obj");
+	expendedora = Model();
+	expendedora.LoadModel("Models/expendedora.obj");
 
 	coleta = Model();
 	coleta.LoadModel("Models/coleta.obj");
-
 	chongo = Model();
 	chongo.LoadModel("Models/chongo.obj");
-
 	brazo = Model();
 	brazo.LoadModel("Models/mano.obj");
-
 	torzo = Model();
 	torzo.LoadModel("Models/cuerpo.obj");
 
@@ -706,9 +735,8 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 	//luz direccional, sólo 1 y siempre debe de existir
-	//luz direccional es el sol\
+	//luz direccional es el sol
 	// 1 ambiental al maximo, 0 todo negro
-	//difusa 1 por caras
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.5f, 0.5f,
 		0.0f, 0.0f, -1.0f);
@@ -730,16 +758,8 @@ int main()
 		0.3f, 0.1f, 0.1f);//ec de 2do grado
 	pointLightCount++;
 
+	//contador de luces spotlight
 	unsigned int spotLightCount = 0;
-
-	/*luz de tipo Spotlight
-	spotLights[0] = SpotLight(0.4f, 0.4f, 0.0f,
-		0.8f, 0.8f,
-		0.0f, 1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		5.0f);
-	spotLightCount++;*/
 
 	//Luz de la lampara - camara
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
@@ -751,7 +771,7 @@ int main()
 	spotLightCount++;
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0;
+		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0, uniformTextureOffset = 0;;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	////Loop mientras no se cierra la ventana
@@ -761,7 +781,8 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
-
+		
+		//animaciones
 		subenManosTumbas();
 
 		//Recibir eventos del usuario
@@ -778,14 +799,13 @@ int main()
 		uniformProjection = shaderList[0].GetProjectionLocation();
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
+		uniformColor = shaderList[0].getColorLocation();
+		uniformTextureOffset = shaderList[0].getOffsetLocation();
 
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
-		uniformColor = shaderList[0].getColorLocation();
 
-		//color blanco inicializado para todos los objetos a menos que se asigne nuevo color
-		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
@@ -794,23 +814,18 @@ int main()
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-		apagaluz = mainWindow.getapagalinterna();
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
+		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		//prende y apaga linterna
-		if (apagaluz < 1.0) {
-			shaderList[0].SetSpotLights(spotLights, spotLightCount - 1);
-		}
-		else {
-			shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		}
-
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
+		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
@@ -890,21 +905,11 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		torzo.RenderModel();
 
-		////cuerpo sailor
-		//color = glm::vec3(0.0f, 0.0f, 0.0f);
-		//model = glm::mat4(1.0);
-		//model = modelaux;
-		//model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		//meshList[3]->RenderMesh();
-
 		//Regresar el color normal
-		color = glm::vec3(1.f, 1.0f, 1.0f);
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 
-
-		//////////////////////////////////////////// MODELOS DEL AMBIENTE ////////////////////////////////////////
+		//////////////////////////////////////////// MODELOS DEL AMBIENTE HUESO ////////////////////////////////////////
 		//Vela
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 25.0f));
@@ -932,7 +937,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 3.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH2.RenderModel();
 
@@ -940,7 +945,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 50.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH1.RenderModel();
 
@@ -948,7 +953,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-50.0f, 0.0f, -70.0f));
 		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH3.RenderModel();
 
@@ -963,7 +968,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 0.0f, -70.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH1.RenderModel();
 
@@ -978,7 +983,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 3.0f, 70.0f));
 		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH2.RenderModel();
 
@@ -986,7 +991,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 70.0f));
 		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LapidaPH3.RenderModel();
 
@@ -1157,7 +1162,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 0.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		calabaza.RenderModel();
 
@@ -1165,7 +1170,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 10.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		calabaza.RenderModel();
 
@@ -1173,7 +1178,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 0.0f, 60.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		calabaza.RenderModel();
 
@@ -1202,7 +1207,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 70.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		calabaza.RenderModel();
 
@@ -1210,7 +1215,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 70.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		calabaza.RenderModel();
 
@@ -1218,7 +1223,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(40.0f, 0.0f, 70.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		calabaza.RenderModel();
 
@@ -1226,7 +1231,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(80.0f, 0.0f, -95.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1234,7 +1239,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(42.0f, 0.0f, -95.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1242,7 +1247,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(4.0f, 0.0f, -95.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1250,7 +1255,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-34.0f, 0.0f, -95.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1258,7 +1263,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-72.0f, 0.0f, -95.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1266,7 +1271,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(95.0f, 0.0f, -73.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1274,7 +1279,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(95.0f, 0.0f, -35.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1282,7 +1287,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(95.0f, 0.0f, 3.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1290,7 +1295,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(95.0f, 0.0f, 41.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1298,7 +1303,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(95.0f, 0.0f, 79.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1306,7 +1311,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(72.0f, 0.0f, 98.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1314,7 +1319,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(34.0f, 0.0f, 98.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1322,7 +1327,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-4.0f, 0.0f, 98.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1330,7 +1335,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-42.0f, 0.0f, 98.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1338,7 +1343,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-80.0f, 0.0f, 98.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1346,7 +1351,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, -80.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1354,7 +1359,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, -42.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1362,7 +1367,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, 75.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1370,7 +1375,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-97.0f, 0.0f, 37.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		reja.RenderModel();
 
@@ -1378,30 +1383,120 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-80.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		camino.RenderModel();
 
-		//Expendora
+		/////////////////////////////// SAILOR MOON AMBIENTE /////////////////////////////////////////////////////////
+
+		//Expendedora
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, -10.0f));
+		model = glm::scale(model, glm::vec3(8.0f, 8.0f, 8.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		expendedora.RenderModel();
+
+		//Arcade primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 10.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 10.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		arcade.RenderModel();
 
-		////Cilindro
-		//model = glm::mat4(1.0f);
-		//color = glm::vec3(0.5f, 0.5f, 0.4f);
-		//model = glm::translate(model, glm::vec3(1.25f, 10.0f, -3.0f));
-		//model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		//model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUESTA
-		//glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		//meshList[4]->RenderMeshGeometry();
+		//Arcade segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcade.RenderModel();
+
+		//Arcade tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcade.RenderModel();
+
+		//Arcade cuarta
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-14.0f, 0.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcade.RenderModel();
+
+		//Banco primero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 18.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		color = glm::vec3(0.9f, 0.5f, 0.45f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		banco.RenderModel();
+
+		//Banco segundo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 18.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		banco.RenderModel();
+
+		//Banco tercero
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 18.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		banco.RenderModel();
+
+		//Banco cuarto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-14.0f, 0.0f, 18.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		banco.RenderModel();
+
+		color = glm::vec3(1.0f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+
+		//Fachada Game Center
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 20.0f));
+		model = glm::scale(model, glm::vec3(40.0f, 40.0f, 40.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		fachada.UseTexture();
+		meshList[4]->RenderMeshGeometry();
+
+		glEnable(GL_BLEND); //Se tiene que desabilitar, se aplicar a las futuras texturas
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		toffsetu += 0.01 * deltaTime;
+		toffsetv += 0.01 * deltaTime;
+
+		if (toffsetu > 1.0)
+			toffsetu = 0.0;
+		if (toffsetv > 1.0)
+			toffsetv = 0;
+
+		toffset = glm::vec2(toffsetu, 0.0f);
+
+		//Letrero Game Center
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-30.1f, 9.0f, 20.0f));
+		model = glm::scale(model, glm::vec3(40.0f, 15.0f, 40.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		letrero.UseTexture();
+		meshList[4]->RenderMeshGeometry();
+
+		glDisable(GL_BLEND);
+		toffset = glm::vec2(0.0f, 0.0f); //Setear con nulos para que no mueva las texturas
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 
 		glUseProgram(0);
-
 		mainWindow.swapBuffers();
 	}
 	return 0;
