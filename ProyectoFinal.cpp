@@ -38,6 +38,12 @@ float incrementoManoHuesoY = 0;
 float offsetIncrementoManoHuesoY = 0.1;
 int banderaincrementoManoHuesoY = 0;
 
+float incSodaZ = 0;
+float incSodaY = 0;
+float incSodaRota = 0;
+float offsetIncSoda = 0.1;
+int bandIncSoda = 0;
+
 //Variables de configuración
 float toffsetu = 0.0f;
 float toffsetv = 0.0f;
@@ -59,6 +65,8 @@ Texture sailorColetasTexture;
 Texture traje;
 Texture fachada;
 Texture letrero;
+Texture pisoGame;
+Texture fachadaLado;
 
 Model LapidaPH1;
 Model LapidaPH2;
@@ -72,8 +80,10 @@ Model camino;
 Model tumba;
 Model manoEsqueleto;
 Model arcade;
+Model arcadeDos;
 Model expendedora;
 Model banco;
+Model soda;
 
 Model coleta;
 Model chongo;
@@ -651,6 +661,43 @@ void subenManosTumbas(){
 	
 }
 
+void caeSoda() {
+	if (bandIncSoda == 0) {
+		if (incSodaZ < 1.0f) {
+			incSodaZ += offsetIncSoda * deltaTime;
+			incSodaRota -= 2 * deltaTime;
+		}
+		else {
+			bandIncSoda = 1;
+		}
+	}
+	if (bandIncSoda == 1) {
+		if (incSodaY > -2.0f) {
+			incSodaY -= offsetIncSoda * deltaTime;
+			incSodaRota -= 2 * deltaTime;
+		}
+		else {
+			bandIncSoda = 2;
+		}
+	}
+	if (bandIncSoda == 2) {
+		if (incSodaZ < 24.0f) {
+			incSodaZ += offsetIncSoda * deltaTime;
+			incSodaRota -= 2 * deltaTime;
+		}
+		else {
+			bandIncSoda = 3;
+		}
+	}
+
+	if (bandIncSoda == 3) {
+		incSodaZ = 0;
+		incSodaY = 0;
+		bandIncSoda = 0;
+	}
+
+}
+
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -682,6 +729,10 @@ int main()
 	fachada.LoadTextureA();
 	letrero = Texture("Textures/letrero.png");
 	letrero.LoadTextureA();
+	pisoGame = Texture("Textures/pisoGame.png");
+	pisoGame.LoadTextureA();
+	fachadaLado = Texture("Textures/fachadaLado.png");
+	fachadaLado.LoadTextureA();
 
 	vela = Model();
 	vela.LoadModel("Models/vela.obj");
@@ -709,8 +760,12 @@ int main()
 	banco.LoadModel("Models/banquito.obj");
 	arcade = Model();
 	arcade.LoadModel("Models/arcade.obj");
+	arcadeDos = Model();
+	arcadeDos.LoadModel("Models/arcadeDos.obj");
 	expendedora = Model();
 	expendedora.LoadModel("Models/expendedora.obj");
+	soda = Model();
+	soda.LoadModel("Models/soda.obj");
 
 	coleta = Model();
 	coleta.LoadModel("Models/coleta.obj");
@@ -784,6 +839,7 @@ int main()
 		
 		//animaciones
 		subenManosTumbas();
+		caeSoda();
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -1391,42 +1447,75 @@ int main()
 
 		//Expendedora
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 0.0f, -10.0f));
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, -22.0f));
 		model = glm::scale(model, glm::vec3(8.0f, 8.0f, 8.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		expendedora.RenderModel();
 
+		//Soda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(9.5f, 2.5f + incSodaY, -20.0f + incSodaZ));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, incSodaRota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		soda.RenderModel();
+
+		//ArcadeDos primera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-20.0f, 0.0f, -21.0f));
+		model = glm::scale(model, glm::vec3(6.0f, 6.0f, 6.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcadeDos.RenderModel();
+
+		//ArcadeDos segunda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-13.0f, 0.0f, -21.0f));
+		model = glm::scale(model, glm::vec3(6.0f, 6.0f, 6.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcadeDos.RenderModel();
+
+		//ArcadeDos tercera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, -21.0f));
+		model = glm::scale(model, glm::vec3(6.0f, 6.0f, 6.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arcadeDos.RenderModel();
+
 		//Arcade primera
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(5.0f, 0.0f, 8.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		arcade.RenderModel();
 
 		//Arcade segunda
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 8.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		arcade.RenderModel();
 
 		//Arcade tercera
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(-11.0f, 0.0f, 8.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		arcade.RenderModel();
 
 		//Arcade cuarta
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-14.0f, 0.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(-19.0f, 0.0f, 8.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		arcade.RenderModel();
 
 		//Banco primero
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 18.0f));
+		model = glm::translate(model, glm::vec3(5.0f, 0.0f, 16.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		color = glm::vec3(0.9f, 0.5f, 0.45f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -1435,7 +1524,7 @@ int main()
 
 		//Banco segundo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 18.0f));
+		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 16.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1443,7 +1532,7 @@ int main()
 
 		//Banco tercero
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-6.0f, 0.0f, 18.0f));
+		model = glm::translate(model, glm::vec3(-11.0f, 0.0f, 16.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1451,7 +1540,7 @@ int main()
 
 		//Banco cuarto
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-14.0f, 0.0f, 18.0f));
+		model = glm::translate(model, glm::vec3(-19.0f, 0.0f, 16.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1462,11 +1551,29 @@ int main()
 
 		//Fachada Game Center
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 20.0f));
-		model = glm::scale(model, glm::vec3(40.0f, 40.0f, 40.0f));
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 25.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 40.0f, 50.0f));
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fachada.UseTexture();
+		meshList[4]->RenderMeshGeometry();
+
+		//Pared Game Center
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, -25.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 40.0f, 50.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		fachadaLado.UseTexture();
+		meshList[4]->RenderMeshGeometry();
+
+		//Piso Game Center
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(20.0f, 0.1f, 25.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 50.0f, 50.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		pisoGame.UseTexture();
 		meshList[4]->RenderMeshGeometry();
 
 		glEnable(GL_BLEND); //Se tiene que desabilitar, se aplicar a las futuras texturas
@@ -1484,8 +1591,8 @@ int main()
 
 		//Letrero Game Center
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-30.1f, 9.0f, 20.0f));
-		model = glm::scale(model, glm::vec3(40.0f, 15.0f, 40.0f));
+		model = glm::translate(model, glm::vec3(-30.1f, 9.0f, 25.0f));
+		model = glm::scale(model, glm::vec3(50.0f, 15.0f, 50.0f));
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
