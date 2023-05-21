@@ -5,9 +5,9 @@ in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
 out vec4 color;
-//tambien en common vals, cuantas luces, 8  o 16 max
+//tambien en common vals, cuantas luces, 8 o 16 max
 // 0 es direccional, 1 de cada una al menos
-const int MAX_POINT_LIGHTS = 3;
+const int MAX_POINT_LIGHTS = 11;
 const int MAX_SPOT_LIGHTS = 3;
 
 struct Light
