@@ -1,0 +1,72 @@
+# Blender 3.5.1 MTL File: 'None'
+# www.blender.org
+
+newmtl Candy_Corn
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Candy Corn.png
+map_d Candy Corn.png
+
+newmtl Candy_Marshmallow
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Marshmallow Twist.png
+map_d Marshmallow Twist.png
+
+newmtl Candy_Peppermint_Candy_Canes
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Peppermint Candy Canes.png
+map_d Peppermint Candy Canes.png
+
+newmtl Gummybear_Blue
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Gummy Blue.png
+map_d Gummy Blue.png
+
+newmtl Peppermint_Swirl_Purple
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Candy Swirl Purple.png
+map_d Candy Swirl Purple.png
+
+newmtl Root_Beer_Barrel1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Root Beer Barrel.png
+map_d Root Beer Barrel.png
+
+newmtl Wrap_Purple
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 2
+map_Kd Candy Wrap Purple.png
+map_d Candy Wrap Purple.png

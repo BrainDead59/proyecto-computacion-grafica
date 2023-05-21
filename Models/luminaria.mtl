@@ -1,0 +1,13 @@
+# Blender 3.5.1 MTL File: 'None'
+# www.blender.org
+
+newmtl projector
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+illum 1
+map_Kd projector_BaseColor.png
+map_Ns projector_Roughness.png
+map_refl projector_Metallic.png
+map_d projector_Opacity.png
