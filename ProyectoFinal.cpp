@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include <math.h>
+#include <chrono>
 
 #include <glew.h>
 #include <glfw3.h>
@@ -92,7 +93,8 @@ Model chongo;
 Model brazo;
 Model torzo;
 
-Skybox skybox;
+Skybox skyboxDia;
+Skybox skyboxNoche;
 
 //materiales
 Material Material_brillante;
@@ -782,29 +784,25 @@ int main()
 	torzo = Model();
 	torzo.LoadModel("Models/cuerpo.obj");
 
-	std::vector<std::string> skyboxFaces;
-	/*skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");*/
+	std::vector<std::string> skyboxFacesDia;
+	std::vector<std::string> skyboxFacesNoche;
 
-	skyboxFaces.push_back("Textures/Skybox/nocheright.png");
-	skyboxFaces.push_back("Textures/Skybox/nocheleft.png");
-	skyboxFaces.push_back("Textures/Skybox/nochebottom.png");
-	skyboxFaces.push_back("Textures/Skybox/nochetop.png");
-	skyboxFaces.push_back("Textures/Skybox/nocheback.png");
-	skyboxFaces.push_back("Textures/Skybox/nochefront.png");
+	skyboxFacesNoche.push_back("Textures/Skybox/nocheright.png");
+	skyboxFacesNoche.push_back("Textures/Skybox/nocheleft.png");
+	skyboxFacesNoche.push_back("Textures/Skybox/nochebottom.png");
+	skyboxFacesNoche.push_back("Textures/Skybox/nochetop.png");
+	skyboxFacesNoche.push_back("Textures/Skybox/nocheback.png");
+	skyboxFacesNoche.push_back("Textures/Skybox/nochefront.png");
 
-	skyboxFaces.push_back("Textures/Skybox/diaback.png");
-	skyboxFaces.push_back("Textures/Skybox/dialeft.png");
-	skyboxFaces.push_back("Textures/Skybox/diabottom.png");
-	skyboxFaces.push_back("Textures/Skybox/diatop.png");
-	skyboxFaces.push_back("Textures/Skybox/diafront.png");
-	skyboxFaces.push_back("Textures/Skybox/diaright.png");
+	skyboxFacesDia.push_back("Textures/Skybox/diaback.png");
+	skyboxFacesDia.push_back("Textures/Skybox/dialeft.png");
+	skyboxFacesDia.push_back("Textures/Skybox/diabottom.png");
+	skyboxFacesDia.push_back("Textures/Skybox/diatop.png");
+	skyboxFacesDia.push_back("Textures/Skybox/diafront.png");
+	skyboxFacesDia.push_back("Textures/Skybox/diaright.png");
 
-	skybox = Skybox(skyboxFaces);
+	skyboxDia = Skybox(skyboxFacesDia);
+	skyboxNoche = Skybox(skyboxFacesNoche);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
@@ -892,17 +890,8 @@ int main()
 	//contador de luces spotlight
 	unsigned int spotLightCount = 0;
 
-	//Luz de la lampara - camara
-	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		10.0f);//alcance
-	spotLightCount++;
-
 	//Luces de luminarias
-	spotLights[1] = SpotLight(0.4f, 0.4f, 0.0f,
+	spotLights[0] = SpotLight(0.4f, 0.4f, 0.0f,
 		0.0f, 0.02f,
 		0.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -910,7 +899,7 @@ int main()
 		10.0f);//alcance
 	spotLightCount++;
 
-	spotLights[2] = SpotLight(0.4f, 0.4f, 0.0f,
+	spotLights[1] = SpotLight(0.4f, 0.4f, 0.0f,
 		0.0f, 0.02f,
 		0.0f, 0.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -921,6 +910,9 @@ int main()
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0, uniformTextureOffset = 0;;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+
+	auto inicial = std::chrono::steady_clock::now();
+	int contador = 0, estadoSky=0,estadoLuz=0,i;
 
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
@@ -942,7 +934,38 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+
+		//Dibujado del skybox de día y de noche
+		auto final = std::chrono::steady_clock::now();
+		auto diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
+
+		if (estadoSky == 0) {
+			if (diferenciaTiempo < 30000) {
+				skyboxDia.DrawSkybox(camera.calculateViewMatrix(), projection);
+				estadoLuz = 0;
+			}
+			else {
+				skyboxDia.DrawSkybox(camera.calculateViewMatrix(), projection);
+				estadoLuz = 0;
+				estadoSky = 1;
+				inicial = final;
+			}
+		}
+
+		diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
+		if (estadoSky == 1) {
+			if (diferenciaTiempo < 30000) {
+				skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
+				estadoLuz = 1;
+			}
+			else {
+				skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
+				estadoLuz = 1;
+				estadoSky = 0;
+				inicial = final;
+			}
+		}
+
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -960,16 +983,25 @@ int main()
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 		//luz ligada a la cámara de tipo flash 
-		glm::vec3 lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-		spotLights[1].SetFlash(glm::vec3(-90.0f, 0.0f, 20.0f), glm::vec3(1.0f, 0.3f, -0.1f));
-		spotLights[2].SetFlash(glm::vec3(-90.0f, 0.0f, -24.0f), glm::vec3(1.0f, 0.3f, 0.1f));
+		spotLights[0].SetFlash(glm::vec3(-90.0f, 0.0f, 20.0f), glm::vec3(1.0f, 0.3f, -0.1f));
+		spotLights[1].SetFlash(glm::vec3(-90.0f, 0.0f, -24.0f), glm::vec3(1.0f, 0.3f, 0.1f));
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
-		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+
+		if (estadoLuz == 0) {
+			shaderList[0].SetPointLights(pointLights, 0);
+		}
+		else {
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+		}
+
+		if (mainWindow.getapagaLuces()) {
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}
+		else {
+			shaderList[0].SetSpotLights(spotLights, 0);
+		}
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);

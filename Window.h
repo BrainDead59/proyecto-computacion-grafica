@@ -17,7 +17,7 @@ public:
 	GLfloat getmuevez() { return muevez; }
 	GLfloat getmuevey() { return muevey; }
 	GLfloat getsentidox() { return sentidox; }
-	GLfloat getapagalinterna(){ return apagalinterna; }
+	GLfloat getapagaLuces(){ return apagaLuces; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -38,7 +38,7 @@ private:
 	GLfloat muevex;
 	GLfloat muevez;
 	GLfloat muevey;
-	GLfloat apagalinterna = 1;
+	GLfloat apagaLuces;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);

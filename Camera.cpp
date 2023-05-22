@@ -16,6 +16,11 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	update();
 }
 
+//CameraPosition = Position
+//CameraTarget = Front
+//CameraUp = UP
+//MoveSpeed = CameraSpeed
+
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
@@ -39,6 +44,8 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 	{
 		position += right * velocity;
 	}
+
+	/*position.y = 30.0f;*/
 }
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
@@ -48,6 +55,7 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 
 	yaw += xChange;
 	pitch += yChange;
+	/*pitch = -30;*/
 
 	if (pitch > 89.0f)
 	{
