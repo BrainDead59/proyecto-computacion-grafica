@@ -45,6 +45,19 @@ float incSodaRota = 0;
 float offsetIncSoda = 0.1;
 int bandIncSoda = 0;
 
+float incFantasmaZ = 0;
+float incFantasmaRota = 0;
+float offsetFantasma = 0.2;
+int bandFantasma = 0;
+
+float incFantasmaCompX = 0;
+float tiempoFantasmaComp = 0;
+float incFantasmaCompY = 0;
+float incFantasmaCompZ = 0;
+float incFantasmaCompRota = 0;
+float offsetFantasmaComp = 0.1;
+int bandFantasmaComp = 0;
+
 //Variables de configuración
 float toffsetu = 0.0f;
 float toffsetv = 0.0f;
@@ -87,6 +100,7 @@ Model soda;
 Model dulces;
 Model luminaria;
 Model lamparaPared;
+Model fantasma;
 
 Model coleta;
 Model chongo;
@@ -702,6 +716,116 @@ void caeSoda() {
 
 }
 
+void mueveFantasma(){
+	if (bandFantasma == 0) {
+		if (incFantasmaZ < 100.0f) {
+			incFantasmaZ += offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 1;
+		}
+	}
+	if (bandFantasma == 1) {
+		if (incFantasmaRota < 180.0f) {
+			incFantasmaRota += 2 * deltaTime;
+		}
+		else {
+			bandFantasma = 2;
+		}
+	}
+	if (bandFantasma == 2) {
+		if (incFantasmaZ > 0.0f) {
+			incFantasmaZ -= offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 3;
+		}
+	}
+	if (bandFantasma == 3) {
+		if (incFantasmaRota > 0.0f) {
+			incFantasmaRota -= 2 * deltaTime;
+		}
+		else {
+			bandFantasma = 0;
+			incFantasmaZ = 0;
+			incFantasmaRota = 0;
+		}
+	}
+}
+
+void complejaFantasma() {
+	if (bandFantasmaComp == 0) {
+		if (incFantasmaCompX < 74.0f) {
+			incFantasmaCompX += offsetFantasmaComp * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 1;
+		}
+	}
+	if (bandFantasmaComp == 1) {
+		if (incFantasmaCompRota > -90.0f) {
+			incFantasmaCompRota -= 2 * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 2;
+		}
+	}
+	if (bandFantasmaComp == 2) {
+		if (incFantasmaCompZ < 21.0f) {
+			incFantasmaCompZ += offsetFantasmaComp * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 3;
+		}
+	}
+	if (bandFantasmaComp == 3) {
+		if (incFantasmaCompRota < 0.0f) {
+			incFantasmaCompRota += 2 * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 4;
+		}
+	}
+	if (bandFantasmaComp == 4) {
+		if (incFantasmaCompX < 97.0f) {
+			incFantasmaCompX += offsetFantasmaComp * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 5;
+		}
+	}
+	if (bandFantasmaComp == 5) {
+		if (incFantasmaCompY < 5.0f) {
+			incFantasmaCompY += offsetFantasmaComp * deltaTime;
+			incFantasmaCompRota += 2 * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 6;
+		}
+	}
+	if (bandFantasmaComp == 6) {
+		if (incFantasmaCompZ > 16.0f) {
+			incFantasmaCompZ -= offsetFantasmaComp * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 7;
+		}
+	}
+	if (bandFantasmaComp == 7) {
+		if (tiempoFantasmaComp < 50.0f) {
+			tiempoFantasmaComp += offsetFantasmaComp * deltaTime;
+		}
+		else {
+			bandFantasmaComp = 0;
+			incFantasmaCompRota = 0;
+			incFantasmaCompX = 0;
+			incFantasmaCompY = 0;
+			incFantasmaCompZ = 0;
+			tiempoFantasmaComp = 0;
+		}
+	}
+}
+
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -774,6 +898,8 @@ int main()
 	luminaria.LoadModel("Models/luminaria.obj");
 	lamparaPared = Model();
 	lamparaPared.LoadModel("Models/lamparaPared.obj");
+	fantasma = Model();
+	fantasma.LoadModel("Models/fantasma.obj");
 
 	coleta = Model();
 	coleta.LoadModel("Models/coleta.obj");
@@ -923,8 +1049,12 @@ int main()
 		lastTime = now;
 		
 		//animaciones
-		subenManosTumbas();
 		caeSoda();
+		complejaFantasma();
+		if (mainWindow.getIniciaAnimacion()) {
+			subenManosTumbas();
+			mueveFantasma();
+		}
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -1641,6 +1771,23 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dulces.RenderModel();
+
+		//Fantasma Tumbas Frente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 15.0f, -50.0f + incFantasmaZ));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, incFantasmaRota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		fantasma.RenderModel();
+
+		//Fantasma Recorrido
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-100.0f + incFantasmaCompX, 0.0f + incFantasmaCompY, 0.0f + incFantasmaCompZ));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, incFantasmaCompRota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		fantasma.RenderModel();
 
 		/////////////////////////////// SAILOR MOON AMBIENTE /////////////////////////////////////////////////////////
 
