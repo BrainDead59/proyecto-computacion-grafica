@@ -13,9 +13,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 {
 	width = windowWidth;
 	height = windowHeight;
-	muevex = 2.0f;
-	muevez = 2.0f;
-	muevey = 2.0f;
+	banderaAnimacion = false;
 	sentidox = 2.0f;
 	apagaLuces = 1.0f;
 	for (size_t i = 0; i < 1024; i++)
@@ -105,33 +103,13 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	if (key == GLFW_KEY_Y)
+	if (key == GLFW_KEY_I)
 	{
-		theWindow-> muevex += 1.0;
-		theWindow-> sentidox = 1.0;
+		theWindow->banderaAnimacion = true;
 	}
 	if (key == GLFW_KEY_U)
 	{
-		theWindow-> muevex -= 1.0;
-		theWindow-> sentidox = -1.0;
-	}
-
-	if (key == GLFW_KEY_H)
-	{
-		theWindow->muevez += 1.0;
-	}
-	if (key == GLFW_KEY_J)
-	{
-		theWindow->muevez -= 1.0;
-	}
-
-	if (key == GLFW_KEY_N)
-	{
-		theWindow->muevey += 1.0;
-	}
-	if (key == GLFW_KEY_M)
-	{
-		theWindow->muevey -= 1.0;
+		theWindow->banderaAnimacion = false;
 	}
 
 	if (key == GLFW_KEY_O)

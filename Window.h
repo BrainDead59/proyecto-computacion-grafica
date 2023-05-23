@@ -13,9 +13,7 @@ public:
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
-	GLfloat getmuevex() { return muevex; }
-	GLfloat getmuevez() { return muevez; }
-	GLfloat getmuevey() { return muevey; }
+	GLfloat getIniciaAnimacion() { return banderaAnimacion; }
 	GLfloat getsentidox() { return sentidox; }
 	GLfloat getapagaLuces(){ return apagaLuces; }
 	bool getShouldClose() {
@@ -35,9 +33,7 @@ private:
 	GLfloat sentidox;
 	GLfloat xChange;
 	GLfloat yChange;
-	GLfloat muevex;
-	GLfloat muevez;
-	GLfloat muevey;
+	bool banderaAnimacion;
 	GLfloat apagaLuces;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
