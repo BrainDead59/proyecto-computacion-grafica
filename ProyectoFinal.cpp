@@ -681,8 +681,9 @@ void subenManosTumbas(){
 
 void caeSoda() {
 	if (bandIncSoda == 0) {
-		if (incSodaZ < 1.0f) {
+		if (incSodaZ < 2.0f) {
 			incSodaZ += offsetIncSoda * deltaTime;
+			incSodaY -= offsetIncSoda * deltaTime;
 			incSodaRota -= 2 * deltaTime;
 		}
 		else {
@@ -690,30 +691,16 @@ void caeSoda() {
 		}
 	}
 	if (bandIncSoda == 1) {
-		if (incSodaY > -2.0f) {
-			incSodaY -= offsetIncSoda * deltaTime;
-			incSodaRota -= 2 * deltaTime;
-		}
-		else {
-			bandIncSoda = 2;
-		}
-	}
-	if (bandIncSoda == 2) {
-		if (incSodaZ < 24.0f) {
+		if (incSodaZ < 26.0f) {
 			incSodaZ += offsetIncSoda * deltaTime;
 			incSodaRota -= 2 * deltaTime;
 		}
 		else {
-			bandIncSoda = 3;
+			bandIncSoda = 0;
+			incSodaZ = 0;
+			incSodaY = 0;
 		}
 	}
-
-	if (bandIncSoda == 3) {
-		incSodaZ = 0;
-		incSodaY = 0;
-		bandIncSoda = 0;
-	}
-
 }
 
 void mueveFantasma(){
@@ -841,7 +828,7 @@ int main()
 	coletas.init();
 	coletas.load();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 5.0f, 0.5f);
 
 	dirtTexture = Texture("Textures/dirt.png");
 	dirtTexture.LoadTextureA();
@@ -1058,8 +1045,8 @@ int main()
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		camera.keyControl(mainWindow.getsKeys(), deltaTime, mainWindow.getCamara());
+		camera.mouseControl(mainWindow.getXChange());
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1793,14 +1780,14 @@ int main()
 
 		//Expendedora
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(10.0f, 0.0f, -22.0f));
+		model = glm::translate(model, glm::vec3(8.0f, 0.0f, -22.0f));
 		model = glm::scale(model, glm::vec3(8.0f, 8.0f, 8.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		expendedora.RenderModel();
 
 		//Soda
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(9.5f, 2.5f + incSodaY, -20.0f + incSodaZ));
+		model = glm::translate(model, glm::vec3(7.5f, 2.5f + incSodaY, -20.0f + incSodaZ));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::rotate(model, incSodaRota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
