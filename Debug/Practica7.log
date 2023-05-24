@@ -1,7 +1,0 @@
-﻿  Iluminacion20232.cpp
-D:\LCGIHC\Practica7\Practica7\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-D:\LCGIHC\Practica7\Practica7\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
-D:\LCGIHC\Practica7\Practica7\Iluminacion20232.cpp(375,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-D:\LCGIHC\Practica7\Practica7\Iluminacion20232.cpp(377,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
-  Practica7.vcxproj -> D:\LCGIHC\Practica7\Debug\Practica7.exe
