@@ -14,7 +14,7 @@ public:
 	GLfloat getXChange();
 	GLfloat getYChange();
 	GLfloat getIniciaAnimacion() { return banderaAnimacion; }
-	GLfloat getsentidox() { return sentidox; }
+	GLfloat getCamara() { return banderaCamara; }
 	GLfloat getapagaLuces(){ return apagaLuces; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
@@ -34,6 +34,7 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	bool banderaAnimacion;
+	bool banderaCamara;
 	GLfloat apagaLuces;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);

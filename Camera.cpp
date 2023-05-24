@@ -2,13 +2,14 @@
 
 Camera::Camera() {}
 
-Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
+Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
 {
-	position = startPosition;
+	positionTercera = startPosition;
+	positionIsometrica = startPosition;
 	worldUp = startUp;
 	yaw = startYaw;
-	pitch = startPitch;
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
+	estado = 0;
 
 	moveSpeed = startMoveSpeed;
 	turnSpeed = startTurnSpeed;
@@ -16,70 +17,75 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	update();
 }
 
-//CameraPosition = Position
-//CameraTarget = Front
-//CameraUp = UP
-//MoveSpeed = CameraSpeed
-
-void Camera::keyControl(bool* keys, GLfloat deltaTime)
+void Camera::keyControl(bool* keys, GLfloat deltaTime, bool mode)
 {
 	GLfloat velocity = moveSpeed * deltaTime;
 
-	if (keys[GLFW_KEY_W])
-	{
-		position += front * velocity;
-	}
+	if (mode) {
+		estado = 1;
+		if (keys[GLFW_KEY_W])
+		{
+			positionTercera += front * velocity;
+		}
 
-	if (keys[GLFW_KEY_S])
-	{
-		position -= front * velocity;
-	}
+		if (keys[GLFW_KEY_S])
+		{
+			positionTercera -= front * velocity;
+		}
 
-	if (keys[GLFW_KEY_A])
-	{
-		position -= right * velocity;
-	}
+		if (keys[GLFW_KEY_A])
+		{
+			positionTercera -= right * velocity;
+		}
 
-	if (keys[GLFW_KEY_D])
-	{
-		position += right * velocity;
-	}
+		if (keys[GLFW_KEY_D])
+		{
+			positionTercera += right * velocity;
+		}
 
-	/*position.y = 30.0f;*/
+		positionTercera.y = 30.0f;
+	}
+	else {
+		estado = 0;
+		if (keys[GLFW_KEY_W])
+		{
+			distanciaCamara -= 0.1f;
+		}
+
+		if (keys[GLFW_KEY_S])
+		{
+			distanciaCamara += 0.1f;
+		}
+	}
 }
 
-void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
+void Camera::mouseControl(GLfloat xChange)
 {
-	xChange *= turnSpeed;
-	yChange *= turnSpeed;
-
-	yaw += xChange;
-	pitch += yChange;
-	/*pitch = -30;*/
-
-	if (pitch > 89.0f)
-	{
-		pitch = 89.0f;
+	if (estado) {
+		xChange *= turnSpeed;
+		yaw += xChange;
+		update();
 	}
-
-	if (pitch < -89.0f)
-	{
-		pitch = -89.0f;
+	else {
+		update();
 	}
-
-	update();
 }
 
 glm::mat4 Camera::calculateViewMatrix()
 {
-	return glm::lookAt(position, position + front, up);
+	if (estado) {
+		return glm::lookAt(positionTercera, positionTercera + front, up);
+	}
+	return glm::lookAt(positionIsometrica, glm::vec3(0.0,0.0,-1.0), glm::vec3(0.0, 1.0, 0.0));
 }
 
 glm::vec3 Camera::getCameraPosition()
 {
-	return position;
+	if (estado) {
+		return positionTercera;
+	}
+	return positionIsometrica;
 }
-
 
 glm::vec3 Camera::getCameraDirection()
 {
@@ -88,15 +94,20 @@ glm::vec3 Camera::getCameraDirection()
 
 void Camera::update()
 {
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front = glm::normalize(front);
+	if (estado) {
+		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		front.y = sin(glm::radians(pitch));
+		front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		front = glm::normalize(front);
 
-	right = glm::normalize(glm::cross(front, worldUp));
-	up = glm::normalize(glm::cross(right, front));
+		right = glm::normalize(glm::cross(front, worldUp));
+		up = glm::normalize(glm::cross(right, front));
+	}else {
+		positionIsometrica.x = distanciaCamara * -cos(glm::radians(pitch)) * cos(glm::radians(pitch));
+		positionIsometrica.y = distanciaCamara * -sin(glm::radians(pitch));
+		positionIsometrica.z = distanciaCamara * cos(glm::radians(pitch));
+	}
 }
-
 
 Camera::~Camera()
 {
