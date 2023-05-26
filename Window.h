@@ -16,6 +16,12 @@ public:
 	GLfloat getIniciaAnimacion() { return banderaAnimacion; }
 	GLfloat getCamara() { return banderaCamara; }
 	GLfloat getapagaLuces(){ return apagaLuces; }
+	GLfloat getsailorx() { return sailorx; }
+	GLfloat getsailorz() { return sailorz; }
+	GLint getpierna() { return pierna; }
+	GLint getbrazo() { return brazo; }
+	GLint getgiro() { return giro; }
+
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -33,6 +39,11 @@ private:
 	GLfloat sentidox;
 	GLfloat xChange;
 	GLfloat yChange;
+	GLfloat sailorx;
+	GLfloat sailorz;
+	GLint pierna;
+	GLint brazo;
+	GLint giro;
 	bool banderaAnimacion;
 	bool banderaCamara;
 	GLfloat apagaLuces;

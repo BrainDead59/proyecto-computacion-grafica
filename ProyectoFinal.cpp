@@ -6,6 +6,7 @@
 #include <vector>
 #include <math.h>
 #include <chrono>
+#include <iostream>
 
 #include <glew.h>
 #include <glfw3.h>
@@ -69,6 +70,9 @@ std::vector<Shader> shaderList;
 using std::vector;
 const float PI = 3.14159265f;
 
+float reproduciranimacion, habilitaranimacion,
+guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
+
 Camera camera;
 
 Texture dirtTexture;
@@ -77,6 +81,9 @@ Texture pisoTexture;
 Texture sailorTexture;
 Texture sailorColetasTexture;
 Texture traje;
+Texture piel;
+Texture piernatextura;
+Texture rojo; 
 Texture fachada;
 Texture letrero;
 Texture pisoGame;
@@ -102,10 +109,16 @@ Model luminaria;
 Model lamparaPared;
 Model fantasma;
 
+Model bow;
 Model coleta;
 Model chongo;
 Model brazo;
 Model torzo;
+Model pierna;
+
+Model pelota;
+
+
 
 Skybox skyboxDia;
 Skybox skyboxNoche;
@@ -130,6 +143,9 @@ static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
+
+//PARA INPUT CON KEYFRAMES 
+void inputKeyframes(bool* keys);
 
 /*Cálculo del promedio de las normales para sombreado de Phong
 en algunas ocasiones nos ayuda para no tener que declarar las normales manualmente dentro del VAO
@@ -813,6 +829,121 @@ void complejaFantasma() {
 	}
 }
 
+///////////////////////////////KEYFRAMES/////////////////////
+
+bool animacion = false;
+
+
+//NEW// Keyframes
+//float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
+float pelotax = -70.0, pelotay = 0.0, pelotaz = 0.0;
+float movpelota_x = 0.0f, movpelota_y = 0.0f, movpelota_z = 0.0f;
+float giropelota = 0;
+
+#define MAX_FRAMES 119
+int i_max_steps = 90;
+int i_curr_steps = 119;
+typedef struct _frame
+{
+	//Variables para GUARDAR Key Frames
+	float movpelota_x;		//Variable para PosicionX
+	float movpelota_y;		//Variable para PosicionY
+	float movpelota_z;		//Variable para PosicionY
+	float movpelota_xInc;		//Variable para IncrementoX
+	float movpelota_yInc;		//Variable para IncrementoY
+	float movpelota_zInc;		//Variable para IncrementoY
+	float giropelota;
+	float giropelotaInc;
+}FRAME;
+
+FRAME KeyFrame[MAX_FRAMES];
+int FrameIndex = 119;			//introducir datos
+bool play = false;
+int playIndex = 0;
+
+
+
+void resetElements(void)
+{
+
+	movpelota_x = KeyFrame[0].movpelota_x;
+	movpelota_y = KeyFrame[0].movpelota_y;
+	movpelota_z = KeyFrame[0].movpelota_z;
+	giropelota = KeyFrame[0].giropelota;
+}
+
+void interpolation(void)
+{
+	KeyFrame[playIndex].movpelota_xInc = (KeyFrame[playIndex + 1].movpelota_x - KeyFrame[playIndex].movpelota_x) / i_max_steps;
+	KeyFrame[playIndex].movpelota_yInc = (KeyFrame[playIndex + 1].movpelota_y - KeyFrame[playIndex].movpelota_y) / i_max_steps;
+	KeyFrame[playIndex].movpelota_zInc = (KeyFrame[playIndex + 1].movpelota_z - KeyFrame[playIndex].movpelota_z) / i_max_steps;
+	KeyFrame[playIndex].giropelotaInc = (KeyFrame[playIndex + 1].giropelota - KeyFrame[playIndex].giropelota) / i_max_steps;
+
+}
+
+
+void animate(void)
+{
+	//std::string content;
+	//std::ifstream fileStream("keyframes.txt", std::ios::in);
+	//int xyzgiro, contador=1;
+
+	//if (!fileStream.is_open()) {
+	//	printf("Failed to read keyframes.txt File doesn't exist.");
+	//	
+	//}
+	//std::string line = "";
+	////std::getline(fileStream, line);
+
+	//if (!fileStream.eof())
+	//{
+		//std::getline(fileStream, line);
+		//content.append(line + "\n");
+
+		//Movimiento del objeto
+		if (play)
+		{
+			if (i_curr_steps >= i_max_steps) //end of animation between frames?
+			{
+				playIndex++;
+				printf("playindex : %d\n", playIndex);
+				if (playIndex > FrameIndex - 2)	//end of total animation?
+				{
+					printf("Frame index= %d\n", FrameIndex);
+					printf("termina anim\n");
+					playIndex = 0;
+					play = false;
+				}
+				else //Next frame interpolations
+				{
+					//printf("entro aquí\n");
+					i_curr_steps = 0; //Reset counter
+					//Interpolation
+					interpolation();
+				}
+			}
+			else
+			{
+				//printf("se quedó aqui\n");
+				//printf("max steps: %f", i_max_steps);
+				//Draw animation
+
+				movpelota_x += KeyFrame[playIndex].movpelota_xInc;
+				movpelota_y += KeyFrame[playIndex].movpelota_yInc;
+				movpelota_z += KeyFrame[playIndex].movpelota_zInc;
+				giropelota += KeyFrame[playIndex].giropelotaInc;
+				i_curr_steps++;
+			}
+
+		}
+	//}
+	//fileStream.close();
+}
+
+/* FIN KEYFRAMES*/
+
+
+
 int main()
 {
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -896,6 +1027,12 @@ int main()
 	brazo.LoadModel("Models/mano.obj");
 	torzo = Model();
 	torzo.LoadModel("Models/cuerpo.obj");
+	pierna = Model();
+	pierna.LoadModel("Models/pierna.obj");
+	bow = Model();
+	bow.LoadModel("Models/BowTie.obj");
+	pelota = Model();
+	pelota.LoadModel("Models/pelota.obj");
 
 	std::vector<std::string> skyboxFacesDia;
 	std::vector<std::string> skyboxFacesNoche;
@@ -1020,12 +1157,109 @@ int main()
 		10.0f);//alcance
 	spotLightCount++;
 
+	glm::vec3 pospelota = glm::vec3(0.0f, 0.0f, 0.0f);
+	//KEYFRAMES DECLARADOS INICIALES
+
+	//KeyFrame[0].movpelota_x = 0.0f;
+	//KeyFrame[0].movpelota_y = 0.0f;
+	//KeyFrame[0].movpelota_z = 0.0f;
+	//KeyFrame[0].giropelota = 0;
+
+
+	//KeyFrame[1].movpelota_x = 0.0f;
+	//KeyFrame[1].movpelota_y = 6.0f;
+	//KeyFrame[1].movpelota_z = 2.0f;
+	//KeyFrame[1].giropelota = 0;
+
+
+	//KeyFrame[2].movpelota_x = 0.0f;
+	//KeyFrame[2].movpelota_y = 8.0f;
+	//KeyFrame[2].movpelota_z = 6.0f;
+	//KeyFrame[2].giropelota = 0;
+
+
+	//KeyFrame[3].movpelota_x = 0.0f;
+	//KeyFrame[3].movpelota_y = 6.0f;
+	//KeyFrame[3].movpelota_z = 10.0f;
+	//KeyFrame[3].giropelota = 0;
+
+	//KeyFrame[4].movpelota_x = 0.0f;
+	//KeyFrame[4].movpelota_y = 0.0f;
+	//KeyFrame[4].movpelota_z = 12.0f;
+	//KeyFrame[4].giropelota = 0;
+	//
+	//KeyFrame[5].movpelota_x = 0.0f;
+	//KeyFrame[5].movpelota_y = 6.0f;
+	//KeyFrame[5].movpelota_z = 14.0f;
+	//KeyFrame[5].giropelota = 0;
+
+	//KeyFrame[6].movpelota_x = 0.0f;
+	//KeyFrame[6].movpelota_y = 8.0f;
+	//KeyFrame[6].movpelota_z = 18.0f;
+	//KeyFrame[6].giropelota = 0;
+
+	//KeyFrame[7].movpelota_x = 0.0f;
+	//KeyFrame[7].movpelota_y = 6.0f;
+	//KeyFrame[7].movpelota_z = 22.0f;
+	//KeyFrame[7].giropelota = 0;
+
+	//KeyFrame[8].movpelota_x = 0.0f;
+	//KeyFrame[8].movpelota_y = 0.0f;
+	//KeyFrame[8].movpelota_z = 24.0f;
+	//KeyFrame[8].giropelota = 0;
+	////
+	//KeyFrame[9].movpelota_x = 0.0f;
+	//KeyFrame[9].movpelota_y = 6.0f;
+	//KeyFrame[9].movpelota_z = 26.0f;
+	//KeyFrame[9].giropelota = 0;
+
+	//KeyFrame[10].movpelota_x = 0.0f;
+	//KeyFrame[10].movpelota_y = 8.0f;
+	//KeyFrame[10].movpelota_z = 30.0f;
+	//KeyFrame[10].giropelota = 0;
+
+	//KeyFrame[11].movpelota_x = 0.0f;
+	//KeyFrame[11].movpelota_y = 6.0f;
+	//KeyFrame[11].movpelota_z = 34.0f;
+	//KeyFrame[11].giropelota = 0;
+
+	//KeyFrame[12].movpelota_x = 0.0f;
+	//KeyFrame[12].movpelota_y = 0.0f;
+	//KeyFrame[12].movpelota_z = 36.0f;
+	//KeyFrame[12].giropelota = 0;
+
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0, uniformTextureOffset = 0;;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	auto inicial = std::chrono::steady_clock::now();
 	int contador = 0, estadoSky=0,estadoLuz=0,i;
+
+
+	std::string content;
+	std::ifstream fileStream("keyframe.txt", std::ios::in);
+	int indice=0;
+
+	if (!fileStream.is_open()) {
+		printf("Failed to read keyframes.txt File doesn't exist.");
+		
+	}
+	std::string line = "";
+	while (!fileStream.eof())
+	{
+		std::getline(fileStream, line);
+		KeyFrame[indice].movpelota_x = std::stoi(line);
+		std::getline(fileStream, line);
+		KeyFrame[indice].movpelota_y = std::stoi(line);
+		std::getline(fileStream, line);
+		KeyFrame[indice].movpelota_z = std::stoi(line);
+		std::getline(fileStream, line);
+		KeyFrame[indice].giropelota = std::stoi(line);
+		indice++;
+	}
+	fileStream.close();
+
+	i_curr_steps = FrameIndex;
 
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
@@ -1042,6 +1276,10 @@ int main()
 			subenManosTumbas();
 			mueveFantasma();
 		}
+
+		//para keyframes
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -1138,76 +1376,184 @@ int main()
 		meshList[0]->RenderMesh();
 
 		/////////////////////////////////////////// SAILOR MOON //////////////////////////////////////////////////////////////
+
+		// TORZO	
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 4.5f, 0.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		sailorTexture.UseTexture();
-		meshList[1]->RenderMesh();
-
-		//sailor pelo
-		model = modelaux;
-		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		meshList[2]->RenderMesh();
-
-		//chongos
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(1.0f, 1.2f, -1.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		sailorColetasTexture.UseTexture();
-		chongo.RenderModel();
-
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(-1.0f, 1.2f, -1.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		sailorColetasTexture.UseTexture();
-		chongo.RenderModel();
-
-		//coleta
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(-1.5f, -0.8f, -1.0f));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		coleta.RenderModel();
-
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(1.5f, -0.8f, -1.0f));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		coleta.RenderModel();
-
-		//brazo
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(1.5f, -0.8f, -1.0f));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		//model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//brazo.RenderModel();
-
-		//torzo
-		model = modelaux;
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.35f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));
-		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(mainWindow.getsailorx(), 3.5f, mainWindow.getsailorz()+30.0f));
+		model = glm::rotate(model, mainWindow.getgiro() * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.6f, 1.6f, 1.6f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		torzo.RenderModel();
 
-		//Regresar el color normal
-		color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+		// ROSTRO
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, 2.4f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.5f, 5.5f, 5.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		sailorTexture.UseTexture();
+		meshList[1]->RenderMesh();
+
+		// FLECO
+		model = modelaux;
+		color = glm::vec3(1.00000f, 0.9f, 0.19608f);
+		model = glm::translate(model, glm::vec3(0.0f, 2.4f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.5f, 5.5f, 5.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		meshList[2]->RenderMesh();
+
+		// CHONGOS
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(1.8f, 4.4f, -1.6f));
+		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		sailorColetasTexture.UseTexture();
+		chongo.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-1.8f, 4.4f, -1.6f));
+		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		sailorColetasTexture.UseTexture();
+		chongo.RenderModel();
+
+		// COLETAS
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(2.7f, 0.6f, -1.5f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.6f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		coleta.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-2.7f, 0.6f, -1.5f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.6f, 0.5f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		coleta.RenderModel();
+
+
+		// MOÑO
+		model = modelaux;
+		color = glm::vec3(1.0f, 0.0f, 0.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.9f));
+		model = glm::scale(model, glm::vec3(6.0f, 10.0f, 6.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		rojo.UseTexture();
+		bow.RenderModel();
+
+		// BRAZOS 
+		model = modelaux;
+		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
+		model = glm::translate(model, glm::vec3(-0.7f, 0.5f, 0.0f));
+		model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 70 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.35f, 0.35f));
+		if (mainWindow.getbrazo() == 1) {
+
+		}
+		else if (mainWindow.getbrazo() % 2 == 0) {
+			model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		else {
+			model = glm::rotate(model, -10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		piel.UseTexture();
+		brazo.RenderModel();
+
+
+		model = modelaux;
+		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
+		model = glm::translate(model, glm::vec3(0.7f, 0.5f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, -50 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(-0.15f, -0.35f, -0.35f));
+		if (mainWindow.getbrazo() == 1) {
+
+		}
+		else if (mainWindow.getbrazo() % 2 == 0) {
+			model = glm::rotate(model, -10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		else {
+			model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		piel.UseTexture();
+		brazo.RenderModel();
+
+		// PIERNAS
+		model = modelaux;
+		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
+		model = glm::translate(model, glm::vec3(0.3f, -2.3f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.23f, 0.22f, 0.23f));
+		if (mainWindow.getpierna() == 1) {
+
+		}
+		else if (mainWindow.getpierna() % 2 == 0) {
+			model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(2.5f, -1.5f, 0.0f));
+			model = glm::translate(model, glm::vec3(2.0f, 0.5f, 0.0f));
+		}
+		else {
+			model = glm::rotate(model, -30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(-2.5f, -1.5f, 0.0f));
+			model = glm::translate(model, glm::vec3(-2.0f, 0.5f, 0.0f));
+		}
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		pierna.RenderModel();
+
+
+		model = modelaux;
+		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
+		model = glm::translate(model, glm::vec3(-0.3f, -2.3f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.23f, 0.22f, 0.23f));
+		if (mainWindow.getpierna() == 1) {
+
+		}
+		else if (mainWindow.getpierna() % 2 == 0) {
+			model = glm::rotate(model, -30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(-2.5f, -1.5f, 0.0f));
+			model = glm::translate(model, glm::vec3(-2.0f, 0.5f, 0.0f));
+		}
+		else {
+			model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(2.5f, -1.5f, 0.0f));
+			model = glm::translate(model, glm::vec3(2.0f, 0.5f, 0.0f));
+		}
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		pierna.RenderModel();
+
+		//Regresar el color normal
+		color = glm::vec3(1.f, 1.0f, 1.0f);
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+
+
+		//************** LUNA PELOTA *********************************************************************
+		model = glm::mat4(1.0);
+		pospelota = glm::vec3(pelotax + movpelota_x, pelotay + movpelota_y, pelotaz + movpelota_z);
+		model = glm::translate(model, pospelota);
+		model = glm::rotate(model, giropelota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		pelota.RenderModel();
+
+
 
 		//////////////////////////////////////////// MODELOS DEL AMBIENTE HUESO ////////////////////////////////////////
 		//Vela
@@ -1978,3 +2324,41 @@ int main()
 	}
 	return 0;
 }
+
+
+void inputKeyframes(bool* keys)
+{
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (reproduciranimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				reproduciranimacion++;
+				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				habilitaranimacion = 0;
+
+			}
+			else
+			{
+				play = false;
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])//habilita reproducir de nuevo
+	{
+		if (habilitaranimacion < 1)
+		{
+			reproduciranimacion = 0;
+		}
+	}
+
+}
+
+

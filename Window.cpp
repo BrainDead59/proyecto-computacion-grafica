@@ -17,6 +17,13 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	banderaCamara = true;
 	sentidox = 2.0f;
 	apagaLuces = 1.0f;
+
+	sailorx = 0.0f;
+	sailorz = 0.0f;
+	pierna = 1;
+	brazo = 1;
+	giro = 0;
+
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -131,6 +138,67 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_Y)
 	{
 		theWindow->banderaCamara = false;
+	}
+
+	if (key == GLFW_KEY_X)
+	{
+
+
+		if (action == GLFW_PRESS)
+		{
+			if (theWindow->giro == 270) {
+				theWindow->giro = 0;
+			}
+			else {
+				theWindow->giro += 90;
+			}
+
+		}
+
+	}
+	if (key == GLFW_KEY_V)
+	{
+
+
+		if (action == GLFW_PRESS)
+		{
+			if (theWindow->giro == 0) {
+				theWindow->giro = 270;
+			}
+			else {
+				theWindow->giro -= 90;
+			}
+
+		}
+
+	}
+	if (key == GLFW_KEY_Z)
+	{
+		if (theWindow->giro == 0 || theWindow->giro == 90)
+			theWindow->sailorz += 1.0;
+		else
+			theWindow->sailorz -= 1.0;
+
+		if (action == GLFW_PRESS)
+		{
+			theWindow->pierna += 1;
+			theWindow->brazo += 1;
+
+		}
+	}
+	if (key == GLFW_KEY_C)
+	{
+
+		if (theWindow->giro == 0 || theWindow->giro == 90)
+			theWindow->sailorx += 1.0;
+		else
+			theWindow->sailorx -= 1.0;
+		if (action == GLFW_PRESS)
+		{
+			theWindow->pierna += 1;
+			theWindow->brazo += 1;
+
+		}
 	}
 
 	if (key >= 0 && key < 1024)
