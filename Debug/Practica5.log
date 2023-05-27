@@ -5,14 +5,14 @@ C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(40,39): warning C4305: 'i
 C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(46,26): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(51,27): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(59,31): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(677,16): warning C4018: '<': no coinciden signed/unsigned
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1267,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1269,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1271,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1273,42): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1283,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1285,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(2335,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(2336,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1252,44): warning C4101: 'i': variable local sin referencia
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(682,16): warning C4018: '<': no coinciden signed/unsigned
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1281,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1283,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1285,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1287,42): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1297,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1299,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(2381,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(2382,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\miran\Desktop\ProyectoFinal\ProyectoFinal.cpp(1266,44): warning C4101: 'i': variable local sin referencia
   Practica5.vcxproj -> C:\Users\miran\Desktop\ProyectoFinal\Debug\ProyectoFinal.exe
