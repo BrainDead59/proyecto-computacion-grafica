@@ -66,6 +66,12 @@ bool hozbandera = false;
 float toffsetu = 0.0f;
 float toffsetv = 0.0f;
 
+float girotiara = 0;
+float tiarax = 0.0f;
+float tiaray = 0.0f;
+float tiaraz = 0.0f;
+bool tiarab = false;
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -118,6 +124,7 @@ Model chongo;
 Model brazo;
 Model torzo;
 Model pierna;
+Model tiara;
 
 Model pelota;
 
@@ -1043,6 +1050,8 @@ int main()
 	pierna.LoadModel("Models/pierna.obj");
 	bow = Model();
 	bow.LoadModel("Models/BowTie.obj");
+	tiara = Model();
+	tiara.LoadModel("Models/tiara.obj");
 	pelota = Model();
 	pelota.LoadModel("Models/pelota.obj");
 
@@ -1568,6 +1577,29 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		pierna.RenderModel();
 
+		// TIARA
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f + tiarax, 30.0f+tiaray, 0.0f + tiaraz));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		//model = glm::rotate(model, girotiara * 20 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tiara.RenderModel();
+
+		tiarax = 0.05 * girotiara * cos(girotiara);
+		tiaraz = 0.05 * girotiara * sin(girotiara);
+
+		if (tiarab == false && girotiara < 360) {
+			girotiara += 0.05;
+			tiaray -= 0.002;
+		}
+		else if (tiarab == false && girotiara == 360) {
+			tiarab = true;
+		}
+		/*else if (tiarab == true && girotiara > 0) {
+			girotiara -= 0.05;
+			tiaray += 0.05;
+		}*/
+		
 		//Regresar el color normal
 		color = glm::vec3(1.f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
