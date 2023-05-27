@@ -59,6 +59,9 @@ float incFantasmaCompRota = 0;
 float offsetFantasmaComp = 0.1;
 int bandFantasmaComp = 0;
 
+int hozrota = 0;
+bool hozbandera = false;
+
 //Variables de configuración
 float toffsetu = 0.0f;
 float toffsetv = 0.0f;
@@ -118,6 +121,10 @@ Model pierna;
 
 Model pelota;
 
+Model cabezapurohueso;
+Model tunicapurohueso;
+Model manoph;
+Model hoz;
 
 
 Skybox skyboxDia;
@@ -1034,6 +1041,15 @@ int main()
 	pelota = Model();
 	pelota.LoadModel("Models/pelota.obj");
 
+	cabezapurohueso = Model();
+	cabezapurohueso.LoadModel("Models/cabezaph.obj");
+	tunicapurohueso = Model();
+	tunicapurohueso.LoadModel("Models/tunicaph.obj");
+	manoph = Model();
+	manoph.LoadModel("Models/manoph.obj");
+	hoz = Model();
+	hoz.LoadModel("Models/hoz.obj");
+
 	std::vector<std::string> skyboxFacesDia;
 	std::vector<std::string> skyboxFacesNoche;
 
@@ -1268,7 +1284,7 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
-		
+
 		//animaciones
 		caeSoda();
 		complejaFantasma();
@@ -1380,7 +1396,7 @@ int main()
 		// TORZO	
 		model = glm::mat4(1.0);
 		color = glm::vec3(1.0f, 1.0f, 1.0f);
-		model = glm::translate(model, glm::vec3(mainWindow.getsailorx(), 3.5f, mainWindow.getsailorz()+30.0f));
+		model = glm::translate(model, glm::vec3(mainWindow.getsailorx(), 3.5f, mainWindow.getsailorz() + 30.0f));
 		model = glm::rotate(model, mainWindow.getgiro() * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.6f, 1.6f, 1.6f));
 		modelaux = model;
@@ -2121,6 +2137,64 @@ int main()
 		model = glm::rotate(model, incFantasmaCompRota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fantasma.RenderModel();
+
+		// PURO HUESO
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-68.5f, 16.0f, -56.0f));
+		model = glm::rotate(model, 120 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		cabezapurohueso.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-70.0f, 0.0f, -60.0f));
+		model = glm::rotate(model, 37 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		tunicapurohueso.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-72.0f, 11.0f, -54.0f));
+		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoph.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-62.0f, 14.0f, -57.0f));
+		model = glm::scale(model, glm::vec3(-0.06f, -0.06f, -0.06f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)); //se mueve
+		model = glm::rotate(model, -hozrota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)); //se mueve
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		manoph.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-61.0f, 14.0f, -57.0f));
+		model = glm::scale(model, glm::vec3(3.5f, 4.5f, 3.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		//model = glm::rotate(model, hozrota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)); //se mueve
+		model = glm::rotate(model, hozrota * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		hoz.RenderModel();
+
+		if (hozbandera == false && hozrota < 60) {
+			hozrota+=1;
+		}
+		else if (hozbandera == false && hozrota == 60) {
+			hozbandera = true;
+		}
+		else if (hozbandera == true && hozrota > 0) {
+			hozrota-=1;
+		}
+		else if (hozbandera == true && hozrota == 0) {
+			hozbandera = false;
+		}
+
 
 		/////////////////////////////// SAILOR MOON AMBIENTE /////////////////////////////////////////////////////////
 
