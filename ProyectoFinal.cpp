@@ -14,8 +14,6 @@
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
-//para probar el importer
-//#include<assimp/Importer.hpp>
 
 #include "Window.h"
 #include "Mesh.h"
@@ -26,7 +24,6 @@
 #include"Model.h"
 #include "Skybox.h"
 
-//para iluminación
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -62,15 +59,15 @@ int bandFantasmaComp = 0;
 float hozrota = 0;
 bool hozbandera = false;
 
-//Variables de configuración
-float toffsetu = 0.0f;
-float toffsetv = 0.0f;
-
 float girotiara = 0;
 float tiarax = 0.0f;
 float tiaray = 0.0f;
 float tiaraz = 0.0f;
 bool tiarab = false;
+
+//Variables de configuración
+float toffsetu = 0.0f;
+float toffsetv = 0.0f;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -118,7 +115,6 @@ Model luminaria;
 Model lamparaPared;
 Model fantasma;
 
-Model bow;
 Model coleta;
 Model chongo;
 Model brazo;
@@ -165,37 +161,6 @@ static const char* fShader = "shaders/shader_light.frag";
 
 //PARA INPUT CON KEYFRAMES 
 void inputKeyframes(bool* keys);
-
-/*Cálculo del promedio de las normales para sombreado de Phong
-en algunas ocasiones nos ayuda para no tener que declarar las normales manualmente dentro del VAO
-*/
-void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
-	unsigned int vLength, unsigned int normalOffset)
-{
-	for (size_t i = 0; i < indiceCount; i += 3)
-	{
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i + 1] * vLength;
-		unsigned int in2 = indices[i + 2] * vLength;
-		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
-		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
-		glm::vec3 normal = glm::cross(v1, v2);
-		normal = glm::normalize(normal);
-
-		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
-		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
-		vertices[in1] += normal.x; vertices[in1 + 1] += normal.y; vertices[in1 + 2] += normal.z;
-		vertices[in2] += normal.x; vertices[in2 + 1] += normal.y; vertices[in2 + 2] += normal.z;
-	}
-
-	for (size_t i = 0; i < verticeCount / vLength; i++)
-	{
-		unsigned int nOffset = i * vLength + normalOffset;
-		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
-		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
-	}
-}
 
 void CreaPiso()
 {
@@ -533,30 +498,6 @@ void CrearSailorMoonPelo()
 		0.38f, 0.23f,  0.35f,	(0.009f * 27),	(0.009f * 64),		-0.0064f, -0.0008f, 0.004f,	//16
 		0.38f, 0.15f,  0.35f,	(0.009f * 27),	(0.009f * 64),		-0.0064f, -0.0008f, 0.004f,	//17
 
-
-
-		//(0.0, 0.25,  0.3),		(0.009f * 27),  (0.009f * 90),		0.0f,	0.0f,	0.0f,	//0
-		//(0.0, 0.29,  0.35),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//1
-		//(0.08, 0.2,  0.3),		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//2
-		//(0.09, 0.2,  0.35),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//3
-		//(0.09, 0.17,  0.3)f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//4
-		//(0.1, 0.17,  0.35)f,	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//5
-		// 
-		//(0.07, 0.1,  0.3),		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//6
-		//(0.13, 0.1,  0.3),		(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//7
-		//(0.18, 0.11,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//8
-		//(0.19, 0.09,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//9
-		//(0.23, 0.09,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//10
-		//(0.26, 0.1,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//11
-		//(0.27, 0.08,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//12
-		//(0.3, 0.08,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//13
-		//(0.36, 0.09,  0.31),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//14
-		//(0.36, 0.29,  0.34),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//15
-		//(0.38, 0.23,  0.35),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//16
-		//(0.38, 0.15,  0.35),	(0.009f * 27),	(0.009f * 64),		0.0f,	0.0f,	0.0f,	//17
-
-
-
 		0.0f, 0.25f,  0.3f,		(0.009f * 27),  (0.009f * 90),		0.05f, -0.04f, -0.04f,	//0 18
 		0.0f, 0.29f,  0.35f,	(0.009f * 27),	(0.009f * 64),		0.05f, -0.04f, -0.04f,	//1 19
 		-0.08f, 0.2f,  0.3f,	(0.009f * 27),	(0.009f * 64),		0.05f, -0.04f, -0.04f,	//2 20
@@ -602,98 +543,6 @@ void CrearSailorMoonPelo()
 
 }
 
-void CrearCilindro(int res, float R) {
-
-	//constantes utilizadas en los ciclos for
-	int n, i;
-	//cálculo del paso interno en la circunferencia y variables que almacenarán cada coordenada de cada vértice
-	GLfloat dt = 2 * PI / res, x, z, y = -0.5f;
-
-	vector<GLfloat> vertices;
-	vector<unsigned int> indices;
-
-	//ciclo for para crear los vértices de las paredes del cilindro
-	for (n = 0; n <= (res); n++) {
-		if (n != res) {
-			x = R * cos((n)*dt);
-			z = R * sin((n)*dt);
-		}
-		//caso para terminar el círculo
-		else {
-			x = R * cos((0) * dt);
-			z = R * sin((0) * dt);
-		}
-		for (i = 0; i < 6; i++) {
-			switch (i) {
-			case 0:
-				vertices.push_back(x);
-				break;
-			case 1:
-				vertices.push_back(y);
-				break;
-			case 2:
-				vertices.push_back(z);
-				break;
-			case 3:
-				vertices.push_back(x);
-				break;
-			case 4:
-				vertices.push_back(0.5);
-				break;
-			case 5:
-				vertices.push_back(z);
-				break;
-			}
-		}
-	}
-
-	//ciclo for para crear la circunferencia inferior
-	for (n = 0; n <= (res); n++) {
-		x = R * cos((n)*dt);
-		z = R * sin((n)*dt);
-		for (i = 0; i < 3; i++) {
-			switch (i) {
-			case 0:
-				vertices.push_back(x);
-				break;
-			case 1:
-				vertices.push_back(-0.5f);
-				break;
-			case 2:
-				vertices.push_back(z);
-				break;
-			}
-		}
-	}
-
-	//ciclo for para crear la circunferencia superior
-	for (n = 0; n <= (res); n++) {
-		x = R * cos((n)*dt);
-		z = R * sin((n)*dt);
-		for (i = 0; i < 3; i++) {
-			switch (i) {
-			case 0:
-				vertices.push_back(x);
-				break;
-			case 1:
-				vertices.push_back(0.5);
-				break;
-			case 2:
-				vertices.push_back(z);
-				break;
-			}
-		}
-	}
-
-	//Se generan los indices de los vértices
-	for (i = 0; i < vertices.size(); i++) indices.push_back(i);
-
-	//se genera el mesh del cilindro
-	Mesh* cilindro = new Mesh();
-	cilindro->CreateMesh(vertices, indices, vertices.size(), indices.size());
-	meshList.push_back(cilindro);
-}
-
 void subenManosTumbas(){
 	if (banderaincrementoManoHuesoY == 0) {
 		if (incrementoManoHuesoY < 10.0f) {
@@ -715,15 +564,15 @@ void subenManosTumbas(){
 
 void hozRota() {
 	if (hozbandera == false && hozrota < 60) {
-		hozrota += 0.5;
+		hozrota += 0.5 * deltaTime;
 	}
-	else if (hozbandera == false && hozrota == 60) {
+	else if (hozbandera == false && hozrota > 60) {
 		hozbandera = true;
 	}
 	else if (hozbandera == true && hozrota > 0) {
-		hozrota -= 0.5;
+		hozrota -= 0.5 * deltaTime;
 	}
-	else if (hozbandera == true && hozrota == 0) {
+	else if (hozbandera == true && hozrota < 0) {
 		hozbandera = false;
 	}
 }
@@ -862,11 +711,31 @@ void complejaFantasma() {
 	}
 }
 
+void giraTiara() {
+	tiarax = 0.05 * girotiara * cos(girotiara);
+	tiaraz = 0.05 * girotiara * sin(girotiara);
+
+	if (tiarab == false && girotiara < 360){
+		girotiara += 0.1 * deltaTime;
+		tiaray -= 0.003 * deltaTime;
+	}
+	else {
+		tiarab = true;
+	}
+	if (tiarab == true && girotiara > 0) {
+		girotiara -= 0.1 * deltaTime;
+		tiaray += 0.003 * deltaTime;
+	}
+	else {
+		tiarab = false;
+	}
+}
+
 ///////////////////////////////KEYFRAMES/////////////////////
 
 bool animacion = false;
 
-//NEW// Keyframes
+//NEW Keyframes
 float pelotax = -70.0, pelotay = 0.0, pelotaz = 0.0;
 float movpelota_x = 0.0f, movpelota_y = 0.0f, movpelota_z = 0.0f;
 float giropelota = 0;
@@ -894,7 +763,6 @@ int playIndex = 0;
 
 void resetElements(void)
 {
-
 	movpelota_x = KeyFrame[0].movpelota_x;
 	movpelota_y = KeyFrame[0].movpelota_y;
 	movpelota_z = KeyFrame[0].movpelota_z;
@@ -912,60 +780,33 @@ void interpolation(void)
 
 void animate(void)
 {
-	//std::string content;
-	//std::ifstream fileStream("keyframes.txt", std::ios::in);
-	//int xyzgiro, contador=1;
-
-	//if (!fileStream.is_open()) {
-	//	printf("Failed to read keyframes.txt File doesn't exist.");
-	//	
-	//}
-	//std::string line = "";
-	////std::getline(fileStream, line);
-
-	//if (!fileStream.eof())
-	//{
-		//std::getline(fileStream, line);
-		//content.append(line + "\n");
-
-		//Movimiento del objeto
-		if (play)
+	//Movimiento del objeto
+	if (play)
+	{
+		if (i_curr_steps >= i_max_steps) //end of animation between frames?
 		{
-			if (i_curr_steps >= i_max_steps) //end of animation between frames?
+			playIndex++;
+			if (playIndex > FrameIndex - 2)	//end of total animation?
 			{
-				playIndex++;
-				printf("playindex : %d\n", playIndex);
-				if (playIndex > FrameIndex - 2)	//end of total animation?
-				{
-					printf("Frame index= %d\n", FrameIndex);
-					printf("termina anim\n");
-					playIndex = 0;
-					play = false;
-				}
-				else //Next frame interpolations
-				{
-					//printf("entro aquí\n");
-					i_curr_steps = 0; //Reset counter
-					//Interpolation
-					interpolation();
-				}
+				playIndex = 0;
+				play = false;
 			}
-			else
+			else //Next frame interpolations
 			{
-				//printf("se quedó aqui\n");
-				//printf("max steps: %f", i_max_steps);
-				//Draw animation
-
-				movpelota_x += KeyFrame[playIndex].movpelota_xInc;
-				movpelota_y += KeyFrame[playIndex].movpelota_yInc;
-				movpelota_z += KeyFrame[playIndex].movpelota_zInc;
-				giropelota += KeyFrame[playIndex].giropelotaInc;
-				i_curr_steps++;
+				i_curr_steps = 0; //Reset counter
+				interpolation();
 			}
-
 		}
-	//}
-	//fileStream.close();
+		else
+		{
+			movpelota_x += KeyFrame[playIndex].movpelota_xInc;
+			movpelota_y += KeyFrame[playIndex].movpelota_yInc;
+			movpelota_z += KeyFrame[playIndex].movpelota_zInc;
+			giropelota += KeyFrame[playIndex].giropelotaInc;
+			i_curr_steps++;
+		}
+
+	}
 }
 
 /* FIN KEYFRAMES*/
@@ -979,7 +820,6 @@ int main()
 	CreateShaders();
 	CrearSailorMoonCabeza();
 	CrearSailorMoonPelo();
-	CrearCilindro(50, 1.0f);
 	CreaParedesGamecenter();
 
 	coletas.init();
@@ -1055,8 +895,6 @@ int main()
 	torzo.LoadModel("Models/cuerpo.obj");
 	pierna = Model();
 	pierna.LoadModel("Models/pierna.obj");
-	bow = Model();
-	bow.LoadModel("Models/BowTie.obj");
 	tiara = Model();
 	tiara.LoadModel("Models/tiara.obj");
 	pelota = Model();
@@ -1243,9 +1081,10 @@ int main()
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
-		//animaciones
+		//animaciones complejas siempre ejecutandose y las simples solo si se aprieta la tecla I
 		caeSoda();
 		complejaFantasma();
+		giraTiara();
 		if (mainWindow.getIniciaAnimacion()) {
 			subenManosTumbas();
 			mueveFantasma();
@@ -1269,6 +1108,7 @@ int main()
 		auto final = std::chrono::steady_clock::now();
 		auto diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
 
+		//Cambio del skybox en base al tiempo que vaya pasando que es del 30 seg.
 		if (estadoSky == 0) {
 			if (diferenciaTiempo < 30000) {
 				skyboxDia.DrawSkybox(camera.calculateViewMatrix(), projection);
@@ -1319,6 +1159,7 @@ int main()
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
 
+		//Apado y encendido de las luces.
 		if (estadoLuz == 0) {
 			shaderList[0].SetPointLights(pointLights, 0);
 		}
@@ -1362,7 +1203,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		torzo.RenderModel();
-
 
 		// ROSTRO
 		model = modelaux;
@@ -1412,18 +1252,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		coleta.RenderModel();
 
-
-		// MOÑO
-		model = modelaux;
-		color = glm::vec3(1.0f, 0.0f, 0.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.9f));
-		model = glm::scale(model, glm::vec3(6.0f, 10.0f, 6.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		rojo.UseTexture();
-		bow.RenderModel();
-
-		// BRAZOS 
+		// Animación y renderizado de los BRAZOS 
 		model = modelaux;
 		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
 		model = glm::translate(model, glm::vec3(-0.7f, 0.5f, 0.0f));
@@ -1443,7 +1272,6 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		piel.UseTexture();
 		brazo.RenderModel();
-
 
 		model = modelaux;
 		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
@@ -1467,7 +1295,7 @@ int main()
 		piel.UseTexture();
 		brazo.RenderModel();
 
-		// PIERNAS
+		// Animación y renderizado de las PIERNAS
 		model = modelaux;
 		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
 		model = glm::translate(model, glm::vec3(0.3f, -2.3f, 0.0f));
@@ -1489,7 +1317,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		pierna.RenderModel();
-
 
 		model = modelaux;
 		color = glm::vec3(0.91373f, 0.81176f, 0.50196f);
@@ -1515,33 +1342,16 @@ int main()
 
 		// TIARA
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f + tiarax, 30.0f+tiaray, 0.0f + tiaraz));
+		model = glm::translate(model, glm::vec3(0.0f + tiarax, 20.0f + tiaray, 30.0f + tiaraz));
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		//model = glm::rotate(model, girotiara * 20 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		tiara.RenderModel();
-
-		tiarax = 0.05 * girotiara * cos(girotiara);
-		tiaraz = 0.05 * girotiara * sin(girotiara);
-
-		if (tiarab == false && girotiara < 360) {
-			girotiara += 0.05;
-			tiaray -= 0.002;
-		}
-		else if (tiarab == false && girotiara == 360) {
-			tiarab = true;
-		}
-		/*else if (tiarab == true && girotiara > 0) {
-			girotiara -= 0.05;
-			tiaray += 0.05;
-		}*/
 		
 		//Regresar el color normal
 		color = glm::vec3(1.f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 
-
-		//************** LUNA PELOTA *********************************************************************
+		//LUNA PELOTA
 		model = glm::mat4(1.0);
 		pospelota = glm::vec3(pelotax + movpelota_x, pelotay + movpelota_y, pelotaz + movpelota_z);
 		model = glm::translate(model, pospelota);
@@ -1550,8 +1360,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		pelota.RenderModel();
-
-
 
 		//////////////////////////////////////////// MODELOS DEL AMBIENTE HUESO ////////////////////////////////////////
 		//Vela
@@ -2308,7 +2116,7 @@ int main()
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fachada.UseTexture();
-		meshList[4]->RenderMeshGeometry();
+		meshList[3]->RenderMeshGeometry();
 
 		//Pared Game Center Exterior
 		model = glm::mat4(1.0f);
@@ -2317,7 +2125,7 @@ int main()
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fachadaLado.UseTexture();
-		meshList[4]->RenderMeshGeometry();
+		meshList[3]->RenderMeshGeometry();
 		
 		//Piso Game Center
 		model = glm::mat4(1.0f);
@@ -2326,11 +2134,13 @@ int main()
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pisoGame.UseTexture();
-		meshList[4]->RenderMeshGeometry();
+		meshList[3]->RenderMeshGeometry();
 
 		glEnable(GL_BLEND); //Se tiene que desabilitar, se aplicar a las futuras texturas
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
+		//Animación del letrero del game center por medio del movimiento de la textura.
 		toffsetu += 0.01 * deltaTime;
 		toffsetv += 0.01 * deltaTime;
 
@@ -2349,7 +2159,7 @@ int main()
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		letrero.UseTexture();
-		meshList[4]->RenderMeshGeometry();
+		meshList[3]->RenderMeshGeometry();
 
 		glDisable(GL_BLEND);
 		toffset = glm::vec2(0.0f, 0.0f); //Setear con nulos para que no mueva las texturas
@@ -2398,7 +2208,6 @@ int main()
 	return 0;
 }
 
-
 void inputKeyframes(bool* keys)
 {
 	if (keys[GLFW_KEY_SPACE])
@@ -2414,7 +2223,7 @@ void inputKeyframes(bool* keys)
 				playIndex = 0;
 				i_curr_steps = 0;
 				reproduciranimacion++;
-				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				printf("\nPresiona 0 para habilitar reproducir de nuevo la animación'\n");
 				habilitaranimacion = 0;
 
 			}
