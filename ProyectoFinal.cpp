@@ -59,7 +59,7 @@ float incFantasmaCompRota = 0;
 float offsetFantasmaComp = 0.1;
 int bandFantasmaComp = 0;
 
-int hozrota = 0;
+float hozrota = 0;
 bool hozbandera = false;
 
 //Variables de configuración
@@ -704,7 +704,21 @@ void subenManosTumbas(){
 			banderaincrementoManoHuesoY = 0;
 		}
 	}
-	
+}
+
+void hozRota() {
+	if (hozbandera == false && hozrota < 60) {
+		hozrota += 0.5;
+	}
+	else if (hozbandera == false && hozrota == 60) {
+		hozbandera = true;
+	}
+	else if (hozbandera == true && hozrota > 0) {
+		hozrota -= 0.5;
+	}
+	else if (hozbandera == true && hozrota == 0) {
+		hozbandera = false;
+	}
 }
 
 void caeSoda() {
@@ -845,9 +859,7 @@ void complejaFantasma() {
 
 bool animacion = false;
 
-
 //NEW// Keyframes
-//float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
 float pelotax = -70.0, pelotay = 0.0, pelotaz = 0.0;
 float movpelota_x = 0.0f, movpelota_y = 0.0f, movpelota_z = 0.0f;
 float giropelota = 0;
@@ -873,8 +885,6 @@ int FrameIndex = 119;			//introducir datos
 bool play = false;
 int playIndex = 0;
 
-
-
 void resetElements(void)
 {
 
@@ -892,7 +902,6 @@ void interpolation(void)
 	KeyFrame[playIndex].giropelotaInc = (KeyFrame[playIndex + 1].giropelota - KeyFrame[playIndex].giropelota) / i_max_steps;
 
 }
-
 
 void animate(void)
 {
@@ -953,8 +962,6 @@ void animate(void)
 }
 
 /* FIN KEYFRAMES*/
-
-
 
 int main()
 {
@@ -1087,9 +1094,7 @@ int main()
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
-	//luz direccional, sólo 1 y siempre debe de existir
-	//luz direccional es el sol
-	// 1 ambiental al maximo, 0 todo negro
+	//luz direccional
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.5f, 0.5f,
 		0.0f, 0.0f, -1.0f);
@@ -1188,75 +1193,6 @@ int main()
 	spotLightCount++;
 
 	glm::vec3 pospelota = glm::vec3(0.0f, 0.0f, 0.0f);
-	//KEYFRAMES DECLARADOS INICIALES
-
-	//KeyFrame[0].movpelota_x = 0.0f;
-	//KeyFrame[0].movpelota_y = 0.0f;
-	//KeyFrame[0].movpelota_z = 0.0f;
-	//KeyFrame[0].giropelota = 0;
-
-
-	//KeyFrame[1].movpelota_x = 0.0f;
-	//KeyFrame[1].movpelota_y = 6.0f;
-	//KeyFrame[1].movpelota_z = 2.0f;
-	//KeyFrame[1].giropelota = 0;
-
-
-	//KeyFrame[2].movpelota_x = 0.0f;
-	//KeyFrame[2].movpelota_y = 8.0f;
-	//KeyFrame[2].movpelota_z = 6.0f;
-	//KeyFrame[2].giropelota = 0;
-
-
-	//KeyFrame[3].movpelota_x = 0.0f;
-	//KeyFrame[3].movpelota_y = 6.0f;
-	//KeyFrame[3].movpelota_z = 10.0f;
-	//KeyFrame[3].giropelota = 0;
-
-	//KeyFrame[4].movpelota_x = 0.0f;
-	//KeyFrame[4].movpelota_y = 0.0f;
-	//KeyFrame[4].movpelota_z = 12.0f;
-	//KeyFrame[4].giropelota = 0;
-	//
-	//KeyFrame[5].movpelota_x = 0.0f;
-	//KeyFrame[5].movpelota_y = 6.0f;
-	//KeyFrame[5].movpelota_z = 14.0f;
-	//KeyFrame[5].giropelota = 0;
-
-	//KeyFrame[6].movpelota_x = 0.0f;
-	//KeyFrame[6].movpelota_y = 8.0f;
-	//KeyFrame[6].movpelota_z = 18.0f;
-	//KeyFrame[6].giropelota = 0;
-
-	//KeyFrame[7].movpelota_x = 0.0f;
-	//KeyFrame[7].movpelota_y = 6.0f;
-	//KeyFrame[7].movpelota_z = 22.0f;
-	//KeyFrame[7].giropelota = 0;
-
-	//KeyFrame[8].movpelota_x = 0.0f;
-	//KeyFrame[8].movpelota_y = 0.0f;
-	//KeyFrame[8].movpelota_z = 24.0f;
-	//KeyFrame[8].giropelota = 0;
-	////
-	//KeyFrame[9].movpelota_x = 0.0f;
-	//KeyFrame[9].movpelota_y = 6.0f;
-	//KeyFrame[9].movpelota_z = 26.0f;
-	//KeyFrame[9].giropelota = 0;
-
-	//KeyFrame[10].movpelota_x = 0.0f;
-	//KeyFrame[10].movpelota_y = 8.0f;
-	//KeyFrame[10].movpelota_z = 30.0f;
-	//KeyFrame[10].giropelota = 0;
-
-	//KeyFrame[11].movpelota_x = 0.0f;
-	//KeyFrame[11].movpelota_y = 6.0f;
-	//KeyFrame[11].movpelota_z = 34.0f;
-	//KeyFrame[11].giropelota = 0;
-
-	//KeyFrame[12].movpelota_x = 0.0f;
-	//KeyFrame[12].movpelota_y = 0.0f;
-	//KeyFrame[12].movpelota_z = 36.0f;
-	//KeyFrame[12].giropelota = 0;
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0, uniformColor = 0, uniformTextureOffset = 0;;
@@ -1264,7 +1200,6 @@ int main()
 
 	auto inicial = std::chrono::steady_clock::now();
 	int contador = 0, estadoSky=0,estadoLuz=0,i;
-
 
 	std::string content;
 	std::ifstream fileStream("keyframe.txt", std::ios::in);
@@ -1305,6 +1240,7 @@ int main()
 		if (mainWindow.getIniciaAnimacion()) {
 			subenManosTumbas();
 			mueveFantasma();
+			hozRota();
 		}
 
 		//para keyframes
@@ -2190,24 +2126,9 @@ int main()
 		model = glm::translate(model, glm::vec3(-61.0f, 14.0f, -57.0f));
 		model = glm::scale(model, glm::vec3(3.5f, 4.5f, 3.5f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		//model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		//model = glm::rotate(model, hozrota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)); //se mueve
 		model = glm::rotate(model, hozrota * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hoz.RenderModel();
-
-		if (hozbandera == false && hozrota < 60) {
-			hozrota+=1;
-		}
-		else if (hozbandera == false && hozrota == 60) {
-			hozbandera = true;
-		}
-		else if (hozbandera == true && hozrota > 0) {
-			hozrota-=1;
-		}
-		else if (hozbandera == true && hozrota == 0) {
-			hozbandera = false;
-		}
 
 		// Jack O'Lantern
 		model = glm::mat4(1.0);

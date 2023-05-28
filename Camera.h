@@ -32,7 +32,7 @@ private:
 
 	GLfloat yaw;
 	GLfloat pitch=-30.0f;
-	GLfloat distanciaCamara=180;
+	GLfloat distanciaCamara=200;
 	GLint estado;
 
 	GLfloat moveSpeed;

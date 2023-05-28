@@ -16,7 +16,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	banderaAnimacion = false;
 	banderaCamara = true;
 	sentidox = 2.0f;
-	apagaLuces = 1.0f;
+	apagaLuces = 0.0f;
 
 	sailorx = 0.0f;
 	sailorz = 0.0f;

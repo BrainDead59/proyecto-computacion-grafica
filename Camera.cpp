@@ -103,7 +103,7 @@ void Camera::update()
 		right = glm::normalize(glm::cross(front, worldUp));
 		up = glm::normalize(glm::cross(right, front));
 	}else {
-		positionIsometrica.x = distanciaCamara * -cos(glm::radians(pitch)) * cos(glm::radians(pitch));
+		positionIsometrica.x = distanciaCamara * sin(glm::radians(pitch));
 		positionIsometrica.y = distanciaCamara * -sin(glm::radians(pitch));
 		positionIsometrica.z = distanciaCamara * cos(glm::radians(pitch));
 	}
