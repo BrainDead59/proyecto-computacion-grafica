@@ -8,7 +8,7 @@ out vec4 color;
 //tambien en common vals, cuantas luces, 8 o 16 max
 // 0 es direccional, 1 de cada una al menos
 const int MAX_POINT_LIGHTS = 11;
-const int MAX_SPOT_LIGHTS = 3;
+const int MAX_SPOT_LIGHTS = 2;
 
 struct Light
 {
