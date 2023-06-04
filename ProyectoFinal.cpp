@@ -712,23 +712,27 @@ void complejaFantasma() {
 }
 
 void giraTiara() {
-	tiarax = 0.05 * girotiara * cos(girotiara);
+	/*tiarax = 0.05 * girotiara * cos(girotiara);
 	tiaraz = 0.05 * girotiara * sin(girotiara);
-
+	*/
 	if (tiarab == false && girotiara < 360){
-		girotiara += 0.1 * deltaTime;
-		tiaray -= 0.003 * deltaTime;
+		girotiara += 0.05 * deltaTime;
+		tiaray -= 0.001 * deltaTime;
 	}
 	else {
 		tiarab = true;
 	}
 	if (tiarab == true && girotiara > 0) {
-		girotiara -= 0.1 * deltaTime;
-		tiaray += 0.003 * deltaTime;
+		girotiara -= 0.05 * deltaTime;
+		tiaray += 0.001 * deltaTime;
 	}
 	else {
 		tiarab = false;
 	}
+
+	tiarax = 16 * sqrt(2.0) * cos(girotiara) / (sin(girotiara) * sin(girotiara) + 1);
+	tiaraz = 32 * sqrt(2.0) * cos(girotiara) * sin(girotiara) / (sin(girotiara) * sin(girotiara) + 1);
+
 }
 
 ///////////////////////////////KEYFRAMES/////////////////////
