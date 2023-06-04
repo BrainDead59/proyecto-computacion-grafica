@@ -44,6 +44,7 @@ float offsetIncSoda = 0.1;
 int bandIncSoda = 0;
 
 float incFantasmaZ = 0;
+float incFantasmaY = 0;
 float incFantasmaRota = 0;
 float offsetFantasma = 0.2;
 int bandFantasma = 0;
@@ -602,7 +603,10 @@ void caeSoda() {
 }
 
 void mueveFantasma(){
-	if (bandFantasma == 0) {
+
+
+	
+	/*if (bandFantasma == 0) {
 		if (incFantasmaZ < 100.0f) {
 			incFantasmaZ += offsetFantasma * deltaTime;
 		}
@@ -633,6 +637,75 @@ void mueveFantasma(){
 		else {
 			bandFantasma = 0;
 			incFantasmaZ = 0;
+			incFantasmaRota = 0;
+		}
+	}*/
+
+
+	if (bandFantasma == 0) {
+		if (incFantasmaY < 15.0f) {
+			incFantasmaY += offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 1;
+		}
+	}
+	if (bandFantasma == 1) {
+		if (incFantasmaZ < 50.0f) {
+			incFantasmaZ += offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 2;
+		}
+	}
+	if (bandFantasma == 2) {
+		if (incFantasmaY > 0.0f) {
+			incFantasmaY -= offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 3;
+		}
+	}
+	if (bandFantasma == 3) {
+		if (incFantasmaRota < 180.0f) {
+			incFantasmaRota += 2 * deltaTime;
+		}
+		else {
+			bandFantasma = 4;
+		}
+	}
+	if (bandFantasma == 4) {
+		if (incFantasmaY < 15.0f) {
+			incFantasmaY += offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 5;
+		}
+	}
+	if (bandFantasma == 5) {
+		if (incFantasmaZ > 0.0f) {
+			incFantasmaZ -= offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 6;
+		}
+	}
+	if (bandFantasma == 6) {
+		if (incFantasmaY > 0.0f) {
+			incFantasmaY -= offsetFantasma * deltaTime;
+		}
+		else {
+			bandFantasma = 7;
+		}
+	}
+	if (bandFantasma == 7) {
+		if (incFantasmaRota > 180.0f) {
+			incFantasmaRota -= 2 * deltaTime;
+		}
+		else {
+			bandFantasma = 0;
+			incFantasmaZ = 0;
+			incFantasmaY = 0;
 			incFantasmaRota = 0;
 		}
 	}
@@ -1560,7 +1633,7 @@ int main()
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		manoEsqueleto.RenderModel();
+		//manoEsqueleto.RenderModel();
 
 		//Mano esqueleto - frente segunda
 		model = glm::mat4(1.0);
@@ -1568,7 +1641,7 @@ int main()
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		manoEsqueleto.RenderModel();
+		//manoEsqueleto.RenderModel();
 
 		//Mano esqueleto - frente tercera
 		model = glm::mat4(1.0);
@@ -1914,10 +1987,10 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dulces.RenderModel();
-
+		///////////////////////////////////////////////////////////////////////////////////////////
 		//Fantasma Tumbas Frente
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(70.0f, 15.0f, -50.0f + incFantasmaZ));
+		model = glm::translate(model, glm::vec3(65.0f, -10.0f + incFantasmaY, -50.0f + incFantasmaZ));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		model = glm::rotate(model, incFantasmaRota * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
