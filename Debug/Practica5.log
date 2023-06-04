@@ -5,21 +5,22 @@ C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Proye
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(43,26): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(48,27): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(56,31): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(567,18): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(573,18): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(715,28): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(716,28): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(719,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(720,19): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(726,20): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(727,19): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(565,18): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(571,18): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(713,28): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(714,28): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(717,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(718,19): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(724,20): warning C4244: '-=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(725,19): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1061,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1063,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
 C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1065,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1067,43): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1069,42): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1079,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1081,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(2144,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(2145,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1049,44): warning C4101: 'i': variable local sin referencia
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1067,42): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1077,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1079,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(2142,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(2143,20): warning C4244: '+=': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\ProyectoFinal.cpp(1047,44): warning C4101: 'i': variable local sin referencia
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
   Practica5.vcxproj -> C:\Users\Brain\Documents\Proyecto Computacion\proyecto-computacion-grafica\Debug\ProyectoFinal.exe

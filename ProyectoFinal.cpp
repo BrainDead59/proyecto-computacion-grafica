@@ -121,7 +121,6 @@ Model brazo;
 Model torzo;
 Model pierna;
 Model tiara;
-
 Model pelota;
 
 Model cabezapurohueso;
@@ -133,7 +132,6 @@ Model jolcabeza;
 Model jolsombrero;
 Model jolropa;
 Model jolpantalones;
-
 
 Skybox skyboxDia;
 Skybox skyboxNoche;
