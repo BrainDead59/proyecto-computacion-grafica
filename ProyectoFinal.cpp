@@ -10,6 +10,8 @@
 
 #include <glew.h>
 #include <glfw3.h>
+#include <SDL\SDL.h>
+#include <SDL\SDL_mixer.h>
 
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
@@ -21,7 +23,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "Sphere.h"
-#include"Model.h"
+#include "Model.h"
 #include "Skybox.h"
 
 #include "CommonValues.h"
@@ -601,45 +603,6 @@ void caeSoda() {
 }
 
 void mueveFantasma(){
-
-
-	
-	/*if (bandFantasma == 0) {
-		if (incFantasmaZ < 100.0f) {
-			incFantasmaZ += offsetFantasma * deltaTime;
-		}
-		else {
-			bandFantasma = 1;
-		}
-	}
-	if (bandFantasma == 1) {
-		if (incFantasmaRota < 180.0f) {
-			incFantasmaRota += 2 * deltaTime;
-		}
-		else {
-			bandFantasma = 2;
-		}
-	}
-	if (bandFantasma == 2) {
-		if (incFantasmaZ > 0.0f) {
-			incFantasmaZ -= offsetFantasma * deltaTime;
-		}
-		else {
-			bandFantasma = 3;
-		}
-	}
-	if (bandFantasma == 3) {
-		if (incFantasmaRota > 0.0f) {
-			incFantasmaRota -= 2 * deltaTime;
-		}
-		else {
-			bandFantasma = 0;
-			incFantasmaZ = 0;
-			incFantasmaRota = 0;
-		}
-	}*/
-
-
 	if (bandFantasma == 0) {
 		if (incFantasmaY < 15.0f) {
 			incFantasmaY += offsetFantasma * deltaTime;
@@ -886,8 +849,21 @@ void animate(void)
 
 /* FIN KEYFRAMES*/
 
-int main()
+int initE = SDL_Init(SDL_INIT_EVERYTHING);
+int initM = Mix_Init(0);
+
+int main(int argc, char * argv[])
 {
+	Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,1024);
+	Mix_Music* musicDia = Mix_LoadMUS("sonidos/dia.wav");
+	Mix_Music* musicNoche = Mix_LoadMUS("sonidos/noche.wav");
+	if (!musicDia) {
+		std::cout << "No se pudo abrir el archivo";
+	}
+	if (!musicNoche) {
+		std::cout << "No se pudo abrir el archivo";
+	}
+
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
@@ -1121,7 +1097,7 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	auto inicial = std::chrono::steady_clock::now();
-	int contador = 0, estadoSky=0,estadoLuz=0,i;
+	int contador = 0, estadoSky=0,estadoLuz=0,i,banderaSonido=0;
 
 	std::string content;
 	std::ifstream fileStream("keyframe.txt", std::ios::in);
@@ -1129,7 +1105,6 @@ int main()
 
 	if (!fileStream.is_open()) {
 		printf("Failed to read keyframes.txt File doesn't exist.");
-		
 	}
 	std::string line = "";
 	while (!fileStream.eof())
@@ -1147,7 +1122,7 @@ int main()
 	fileStream.close();
 
 	i_curr_steps = FrameIndex;
-
+	
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -1185,6 +1160,10 @@ int main()
 
 		//Cambio del skybox en base al tiempo que vaya pasando que es del 30 seg.
 		if (estadoSky == 0) {
+			if (banderaSonido == 0) {
+				Mix_PlayMusic(musicDia, -1);
+				banderaSonido = 1;
+			}
 			if (diferenciaTiempo < 30000) {
 				skyboxDia.DrawSkybox(camera.calculateViewMatrix(), projection);
 				estadoLuz = 0;
@@ -1199,6 +1178,10 @@ int main()
 
 		diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
 		if (estadoSky == 1) {
+			if(banderaSonido == 1) {
+				Mix_PlayMusic(musicNoche, -1);
+				banderaSonido = 0;
+			}
 			if (diferenciaTiempo < 30000) {
 				skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
 				estadoLuz = 1;
@@ -2280,6 +2263,9 @@ int main()
 		glUseProgram(0);
 		mainWindow.swapBuffers();
 	}
+	Mix_FreeMusic(musicDia);
+	Mix_FreeMusic(musicNoche);
+	Mix_Quit();
 	return 0;
 }
 
