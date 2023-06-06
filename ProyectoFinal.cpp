@@ -849,19 +849,24 @@ void animate(void)
 
 /* FIN KEYFRAMES*/
 
-int initE = SDL_Init(SDL_INIT_EVERYTHING);
-int initM = Mix_Init(0);
+int initE = SDL_Init(SDL_INIT_AUDIO);
 
 int main(int argc, char * argv[])
 {
+	//Se declaran los objetos de audio y se comprueba que se abran correctamente.
 	Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,1024);
 	Mix_Music* musicDia = Mix_LoadMUS("sonidos/dia.wav");
 	Mix_Music* musicNoche = Mix_LoadMUS("sonidos/noche.wav");
+	Mix_Chunk* camina = Mix_LoadWAV("sonidos/pasoSailor.wav");
+	Mix_VolumeChunk(camina, 50);
 	if (!musicDia) {
-		std::cout << "No se pudo abrir el archivo";
+		std::cout << "No se pudo abrir el archivo" << Mix_GetError();
 	}
 	if (!musicNoche) {
-		std::cout << "No se pudo abrir el archivo";
+		std::cout << "No se pudo abrir el archivo" << Mix_GetError();
+	}
+	if (!camina) {
+		std::cout << "No se pudo abrir el archivo" << Mix_GetError();
 	}
 
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
@@ -1097,7 +1102,7 @@ int main(int argc, char * argv[])
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 	auto inicial = std::chrono::steady_clock::now();
-	int contador = 0, estadoSky=0,estadoLuz=0,i,banderaSonido=0;
+	int contador = 0, estadoSky=0,estadoLuz=0,i,banderaSonido=0, banderaCamina=0;
 
 	std::string content;
 	std::ifstream fileStream("keyframe.txt", std::ios::in);
@@ -1178,6 +1183,7 @@ int main(int argc, char * argv[])
 
 		diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
 		if (estadoSky == 1) {
+			//Comprueba la pista a reproducir.
 			if(banderaSonido == 1) {
 				Mix_PlayMusic(musicNoche, -1);
 				banderaSonido = 0;
@@ -1363,11 +1369,21 @@ int main(int argc, char * argv[])
 
 		}
 		else if (mainWindow.getpierna() % 2 == 0) {
+			//Indica el sonido
+			if (banderaCamina == 0) {
+				int canal = Mix_PlayChannel(2, camina, 0);
+				banderaCamina = 1;
+			}
 			model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::translate(model, glm::vec3(2.5f, -1.5f, 0.0f));
 			model = glm::translate(model, glm::vec3(2.0f, 0.5f, 0.0f));
 		}
 		else {
+			//Indica el sonido
+			if (banderaCamina == 1) {
+				int canal = Mix_PlayChannel(2, camina, 0);
+				banderaCamina = 0;
+			}
 			model = glm::rotate(model, -30 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::translate(model, glm::vec3(-2.5f, -1.5f, 0.0f));
 			model = glm::translate(model, glm::vec3(-2.0f, 0.5f, 0.0f));
@@ -2263,9 +2279,13 @@ int main(int argc, char * argv[])
 		glUseProgram(0);
 		mainWindow.swapBuffers();
 	}
+
+	//Liberar el audio
 	Mix_FreeMusic(musicDia);
 	Mix_FreeMusic(musicNoche);
+	Mix_FreeChunk(camina);
 	Mix_Quit();
+	SDL_Quit();
 	return 0;
 }
 
