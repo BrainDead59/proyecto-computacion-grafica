@@ -137,6 +137,7 @@ Model jolropa;
 Model jolpantalones;
 
 Skybox skyboxDia;
+Skybox skyboxAtardece;
 Skybox skyboxNoche;
 
 //materiales
@@ -975,6 +976,7 @@ int main(int argc, char * argv[])
 	jolpantalones.LoadModel("Models/jolpantalones.obj");
 
 	std::vector<std::string> skyboxFacesDia;
+	std::vector<std::string> skyboxFacesAtardece;
 	std::vector<std::string> skyboxFacesNoche;
 
 	skyboxFacesNoche.push_back("Textures/Skybox/nocheright.png");
@@ -991,8 +993,16 @@ int main(int argc, char * argv[])
 	skyboxFacesDia.push_back("Textures/Skybox/diafront.png");
 	skyboxFacesDia.push_back("Textures/Skybox/diaright.png");
 
+	skyboxFacesAtardece.push_back("Textures/Skybox/atardeceright.png");
+	skyboxFacesAtardece.push_back("Textures/Skybox/atardeceleft.png");
+	skyboxFacesAtardece.push_back("Textures/Skybox/atardecebottom.png");
+	skyboxFacesAtardece.push_back("Textures/Skybox/atardecetop.png");
+	skyboxFacesAtardece.push_back("Textures/Skybox/atardecefront.png");
+	skyboxFacesAtardece.push_back("Textures/Skybox/atardeceback.png");
+
 	skyboxDia = Skybox(skyboxFacesDia);
 	skyboxNoche = Skybox(skyboxFacesNoche);
+	skyboxAtardece = Skybox(skyboxFacesAtardece);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
@@ -1065,13 +1075,32 @@ int main(int argc, char * argv[])
 
 	pointLights[9] = PointLight(1.0f, 0.1f, 0.0f,
 		3.0f, 30.0f,
-		-30.0f, 0.0f, 60.0f,
+		-65.0f, 0.0f, -50.0f,
 		0.3f, 0.1f, 0.1f);//ec de 2do grado
 	pointLightCount++;
 
-	pointLights[10] = PointLight(1.0f, 0.1f, 0.0f,
-		3.0f, 30.0f,
-		-20.0f, 0.0f, -50.0f,
+	//Calabazas restantes
+	pointLights[10] = PointLight(1.0f, 0.5f, 0.0f,
+		2.0f, 10.0f,
+		70.0f, 0.0f, -40.0f,
+		0.3f, 0.1f, 0.1f);//ec de 2do grado
+	pointLightCount++;
+
+	pointLights[11] = PointLight(1.0f, 0.5f, 0.0f,
+		2.0f, 10.0f,
+		70.0f, 0.0f, 60.0f,
+		0.3f, 0.1f, 0.1f);//ec de 2do grado
+	pointLightCount++;
+
+	pointLights[12] = PointLight(1.0f, 0.5f, 0.0f,
+		2.0f, 10.0f,
+		-10.0f, 0.0f, -70.0f,
+		0.3f, 0.1f, 0.1f);//ec de 2do grado
+	pointLightCount++;
+
+	pointLights[13] = PointLight(1.0f, 0.5f, 0.0f,
+		2.0f, 10.0f,
+		-10.0f, 0.0f, 70.0f,
 		0.3f, 0.1f, 0.1f);//ec de 2do grado
 	pointLightCount++;
 
@@ -1167,15 +1196,14 @@ int main(int argc, char * argv[])
 		if (estadoSky == 0) {
 			if (banderaSonido == 0) {
 				Mix_PlayMusic(musicDia, -1);
+				estadoLuz = 0;
 				banderaSonido = 1;
 			}
 			if (diferenciaTiempo < 30000) {
 				skyboxDia.DrawSkybox(camera.calculateViewMatrix(), projection);
-				estadoLuz = 0;
 			}
 			else {
 				skyboxDia.DrawSkybox(camera.calculateViewMatrix(), projection);
-				estadoLuz = 0;
 				estadoSky = 1;
 				inicial = final;
 			}
@@ -1183,18 +1211,29 @@ int main(int argc, char * argv[])
 
 		diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
 		if (estadoSky == 1) {
+			if (diferenciaTiempo < 30000) {
+				skyboxAtardece.DrawSkybox(camera.calculateViewMatrix(), projection);
+			}
+			else {
+				skyboxAtardece.DrawSkybox(camera.calculateViewMatrix(), projection);
+				estadoSky = 2;
+				inicial = final;
+			}
+		}
+
+		diferenciaTiempo = std::chrono::duration_cast<std::chrono::milliseconds>(final - inicial).count();
+		if (estadoSky == 2) {
 			//Comprueba la pista a reproducir.
 			if(banderaSonido == 1) {
 				Mix_PlayMusic(musicNoche, -1);
+				estadoLuz = 1;
 				banderaSonido = 0;
 			}
 			if (diferenciaTiempo < 30000) {
 				skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
-				estadoLuz = 1;
 			}
 			else {
 				skyboxNoche.DrawSkybox(camera.calculateViewMatrix(), projection);
-				estadoLuz = 1;
 				estadoSky = 0;
 				inicial = final;
 			}
@@ -1454,15 +1493,7 @@ int main(int argc, char * argv[])
 
 		//Vela
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 60.0f));
-		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		vela.RenderModel();
-
-		//Vela
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-20.0f, 0.0f, -50.0f));
+		model = glm::translate(model, glm::vec3(-65.0f, 0.0f, -50.0f));
 		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1984,6 +2015,31 @@ int main(int argc, char * argv[])
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dulces.RenderModel();
+
+		//Dulces
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 0.0f, -60.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dulces.RenderModel();
+
+		//Dulces
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 80.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dulces.RenderModel();
+
+		//Dulces
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 60.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dulces.RenderModel();
+
 		///////////////////////////////////////////////////////////////////////////////////////////
 		//Fantasma Tumbas Frente
 		model = glm::mat4(1.0);
